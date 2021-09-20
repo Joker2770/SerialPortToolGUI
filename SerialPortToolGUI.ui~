@@ -293,7 +293,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBoxText" id="cbt_port">
+                              <object class="GtkComboBoxText">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                               </object>
@@ -328,7 +328,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBoxText" id="cbt_baudrate">
+                              <object class="GtkComboBoxText">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                               </object>
@@ -363,7 +363,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBoxText" id="cbt_bytesize">
+                              <object class="GtkComboBoxText">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                               </object>
@@ -398,7 +398,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBoxText" id="cbt_parity">
+                              <object class="GtkComboBoxText">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                               </object>
@@ -433,7 +433,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBoxText" id="cbt_stopbits">
+                              <object class="GtkComboBoxText">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                               </object>
@@ -468,7 +468,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBoxText" id="cbt_flowcontrol">
+                              <object class="GtkComboBoxText">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                               </object>
