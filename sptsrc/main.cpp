@@ -26,16 +26,82 @@
 #include "port_control.h"
 #include <gtk/gtk.h>
 
+my_serial_ctrl *pS = nullptr;
+
+static void
+show_errMsg(const gchar* errMsg, gpointer data)
+{
+		GtkWidget *dialog = nullptr;
+		dialog = gtk_message_dialog_new(GTK_WINDOW(data),
+					GTK_DIALOG_DESTROY_WITH_PARENT,
+					GTK_MESSAGE_ERROR,
+					GTK_BUTTONS_OK,
+					"%s",errMsg);
+		gtk_window_set_title(GTK_WINDOW(dialog), "Error");
+		gtk_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy(dialog);
+}
+
+static void
+open_callback(GtkWidget *widget, gpointer data)
+{
+	if (nullptr != pS)
+	{
+		gchar errMsg[256] = "";
+		memset(errMsg, 0, sizeof(errMsg));
+		int ret = pS->open_port(errMsg);
+		printf("open ret: %d\n", ret);
+
+		if (strlen(errMsg)>0)
+			show_errMsg(errMsg, data);
+	}
+}
+
+static void
+close_callback(GtkWidget *widget, gpointer data)
+{
+	if (nullptr != pS)
+	{
+		gchar errMsg[128] = "";
+		memset(errMsg, 0, sizeof(errMsg));
+		int ret = pS->close_port(errMsg);
+		printf("close ret: %d\n", ret);
+
+		if (strlen(errMsg)>0)
+			show_errMsg(errMsg, data);
+	}
+}
+
+static void 
+cbt_port_callback(GtkWidget *widget, gpointer data)
+{
+	gchar *gData = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
+	printf("cbt port change: %s\n", gData);
+	pS->m_serial->setPort(gData);
+}
+
+static void 
+cbt_baudrate_callback(GtkWidget *widget, gpointer data)
+{
+	gchar *gData = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
+	printf("cbt baudrate change: %s\n", gData);
+	pS->m_serial->setBaudrate(atol(gData));
+}
+
 int main(int argc, char *argv[])
 {
-	my_serial_ctrl *pS = new my_serial_ctrl();
+	pS = new my_serial_ctrl();
 
 	GtkBuilder *builder = NULL;
 	GObject *window = NULL;
 	GObject *comboBoxText = NULL;
+	GObject *button = NULL;
 	GError *error = NULL;
 
-    gtk_init(&argc, &argv);
+	const gchar *entry_port = "/dev/ttyUSB0";
+	const gchar *entry_baud = "57600";
+
+	gtk_init(&argc, &argv);
 
 	builder = gtk_builder_new();
 	if (gtk_builder_add_from_file(builder, "SerialPortToolGUI.ui", &error) == 0)
@@ -47,6 +113,12 @@ int main(int argc, char *argv[])
 
 	window = gtk_builder_get_object(builder, "mainWindow");
 	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+	button = gtk_builder_get_object(builder, "btn_open");
+	g_signal_connect(button, "clicked", G_CALLBACK(open_callback), NULL);
+
+	button = gtk_builder_get_object(builder, "btn_close");
+	g_signal_connect(button, "clicked", G_CALLBACK(close_callback), NULL);
 
 	comboBoxText = gtk_builder_get_object(builder, "cbt_port");
 	//entry_port = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText));
@@ -61,6 +133,12 @@ int main(int argc, char *argv[])
 		i++;
 		printf("%d. Port - <%s>\n\tDescription: %s\n\tHardware_id: %s\n\n", i, device.port.c_str(), device.description.c_str(), device.hardware_id.c_str());
 	}
+	g_signal_connect(comboBoxText, "changed", G_CALLBACK(cbt_port_callback), (gpointer)window);
+
+	//setBaudrate
+	comboBoxText = gtk_builder_get_object(builder, "cbt_baudrate");
+	pS->m_serial->setBaudrate(atol(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText))));
+	g_signal_connect(comboBoxText, "changed", G_CALLBACK(cbt_baudrate_callback), NULL);
 
 	g_object_unref(builder);
 

@@ -156,7 +156,7 @@ void my_serial_ctrl::enumerate_ports()
 	printf("Total %d ports could be connect. \n", i);
 }
 
-int my_serial_ctrl::open_port()
+int my_serial_ctrl::open_port(char* errMsg)
 {
 	char szPort[128] = "";
 	memset(szPort, 0, sizeof(szPort));
@@ -179,6 +179,8 @@ int my_serial_ctrl::open_port()
 		catch (exception &e)
 		{
 			printf("Unhandled Exception: %s\n", e.what());
+			if (NULL != errMsg)
+				strncpy(errMsg, e.what(), 256);
 		}
 
 		if (!this->m_serial->isOpen())
@@ -191,7 +193,7 @@ int my_serial_ctrl::open_port()
 	return 0;
 }
 
-int my_serial_ctrl::close_port()
+int my_serial_ctrl::close_port(char* errMsg)
 {
 	if (this->m_serial->isOpen())
 	{
@@ -205,6 +207,8 @@ int my_serial_ctrl::close_port()
 		catch (exception &e)
 		{
 			printf("Unhandled Exception: %s\n", e.what());
+			if (NULL != errMsg)
+				strncpy(errMsg, e.what(), 256);
 		}
 
 		if (this->m_serial->isOpen())
