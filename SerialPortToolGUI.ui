@@ -19,6 +19,179 @@
  -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
+  <object class="GtkDialog">
+    <property name="can-focus">False</property>
+    <property name="type-hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can-focus">False</property>
+            <property name="layout-style">end</property>
+            <child>
+              <object class="GtkButton" id="dl_1_btn_apply">
+                <property name="label" translatable="yes">apply</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="dl_1_btn_cancel">
+                <property name="label" translatable="yes">cancel</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <!-- n-columns=2 n-rows=5 -->
+          <object class="GtkGrid">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="row-spacing">3</property>
+            <property name="row-homogeneous">True</property>
+            <property name="column-homogeneous">True</property>
+            <child>
+              <object class="GtkLabel" id="dl_lab_ibt">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">inter_byte_timeout</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="dl_lab_rtc">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">read_timeout_constant</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="dl_lab_rtm">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">read_timeout_multiplier</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="dl_lab_wtc">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">write_timeout_constant</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="dl_lab_wtm">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">write_timeout_multiplier</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="dl_1_entry_ibt">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="text" translatable="yes">65535</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="dl_1_entry_rtc">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="text" translatable="yes">1000</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="dl_1_entry_rtm">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="text" translatable="yes">0</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="dl_1_entry_wtc">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="text" translatable="yes">1000</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="dl_1_entry_wtm">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="text" translatable="yes">0</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">4</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkWindow" id="mainWindow">
     <property name="can-focus">False</property>
     <property name="default-width">640</property>
@@ -331,6 +504,37 @@
                               <object class="GtkComboBoxText" id="cbt_baudrate">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="active-id">9600</property>
+                                <items>
+                                  <item id="0" translatable="yes">0</item>
+                                  <item id="50" translatable="yes">50</item>
+                                  <item id="75" translatable="yes">75</item>
+                                  <item id="110" translatable="yes">110</item>
+                                  <item id="134" translatable="yes">134</item>
+                                  <item id="150" translatable="yes">150</item>
+                                  <item id="200" translatable="yes">200</item>
+                                  <item id="300" translatable="yes">300</item>
+                                  <item id="600" translatable="yes">600</item>
+                                  <item id="1200" translatable="yes">1200</item>
+                                  <item id="1800" translatable="yes">1800</item>
+                                  <item id="2400" translatable="yes">2400</item>
+                                  <item id="4800" translatable="yes">4800</item>
+                                  <item id="7200" translatable="yes">7200</item>
+                                  <item id="9600" translatable="yes">9600</item>
+                                  <item id="14400" translatable="yes">14400</item>
+                                  <item id="19200" translatable="yes">19200</item>
+                                  <item id="28800" translatable="yes">28800</item>
+                                  <item id="38400" translatable="yes">38400</item>
+                                  <item id="57600" translatable="yes">57600</item>
+                                  <item id="76800" translatable="yes">76800</item>
+                                  <item id="115200" translatable="yes">115200</item>
+                                  <item id="128000" translatable="yes">128000</item>
+                                  <item id="153600" translatable="yes">153600</item>
+                                  <item id="230400" translatable="yes">230400</item>
+                                  <item id="256000" translatable="yes">256000</item>
+                                  <item id="460800" translatable="yes">460800</item>
+                                  <item id="921600" translatable="yes">921600</item>
+                                </items>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -366,6 +570,13 @@
                               <object class="GtkComboBoxText" id="cbt_bytesize">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="active-id">8</property>
+                                <items>
+                                  <item id="5" translatable="yes">5</item>
+                                  <item id="6" translatable="yes">6</item>
+                                  <item id="7" translatable="yes">7</item>
+                                  <item id="8" translatable="yes">8</item>
+                                </items>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -401,6 +612,14 @@
                               <object class="GtkComboBoxText" id="cbt_parity">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="active-id">0</property>
+                                <items>
+                                  <item id="0" translatable="yes">none</item>
+                                  <item id="1" translatable="yes">odd</item>
+                                  <item id="2" translatable="yes">even</item>
+                                  <item id="3" translatable="yes">mark</item>
+                                  <item id="4" translatable="yes">space</item>
+                                </items>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -436,6 +655,12 @@
                               <object class="GtkComboBoxText" id="cbt_stopbits">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="active-id">1</property>
+                                <items>
+                                  <item id="1" translatable="yes">1</item>
+                                  <item id="2" translatable="yes">2</item>
+                                  <item id="3" translatable="yes">1.5</item>
+                                </items>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -471,6 +696,12 @@
                               <object class="GtkComboBoxText" id="cbt_flowcontrol">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="active-id">0</property>
+                                <items>
+                                  <item id="0" translatable="yes">none</item>
+                                  <item id="1" translatable="yes">software</item>
+                                  <item id="2" translatable="yes">hardware</item>
+                                </items>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -486,6 +717,19 @@
                           </packing>
                         </child>
                         <child>
+                          <object class="GtkButton" id="btn_timeout_setting">
+                            <property name="label" translatable="yes">timeout setting</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">6</property>
+                          </packing>
+                        </child>
+                        <child>
                           <object class="GtkButton" id="btn_more_setting">
                             <property name="label" translatable="yes">more setting</property>
                             <property name="visible">True</property>
@@ -495,7 +739,7 @@
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">6</property>
+                            <property name="position">7</property>
                           </packing>
                         </child>
                         <child>
@@ -534,7 +778,7 @@
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">7</property>
+                            <property name="position">8</property>
                           </packing>
                         </child>
                       </object>
