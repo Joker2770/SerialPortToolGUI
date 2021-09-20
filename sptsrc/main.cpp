@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
 
 	GtkBuilder *builder = NULL;
 	GObject *window = NULL;
+	GObject *comboBoxText = NULL;
 	GError *error = NULL;
 
     gtk_init(&argc, &argv);
@@ -46,6 +47,20 @@ int main(int argc, char *argv[])
 
 	window = gtk_builder_get_object(builder, "mainWindow");
 	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+	comboBoxText = gtk_builder_get_object(builder, "cbt_port");
+	//entry_port = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText));
+	gtk_combo_box_text_remove_all(GTK_COMBO_BOX_TEXT(comboBoxText));
+	vector<serial::PortInfo> devices_found = serial::list_ports();
+	vector<serial::PortInfo>::iterator iter = devices_found.begin();
+	int i = 0;
+	while (iter != devices_found.end())
+	{
+		serial::PortInfo device = *iter++;
+		gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(comboBoxText), to_string(i).c_str(), device.port.c_str());
+		i++;
+		printf("%d. Port - <%s>\n\tDescription: %s\n\tHardware_id: %s\n\n", i, device.port.c_str(), device.description.c_str(), device.hardware_id.c_str());
+	}
 
 	g_object_unref(builder);
 
