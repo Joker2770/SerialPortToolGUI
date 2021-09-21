@@ -47,6 +47,8 @@ open_callback(GtkWidget *widget, gpointer data)
 {
 	if (nullptr != pS)
 	{
+		pS->show_port_set();
+
 		gchar errMsg[256] = "";
 		memset(errMsg, 0, sizeof(errMsg));
 		int ret = pS->open_port(errMsg);
@@ -75,17 +77,114 @@ close_callback(GtkWidget *widget, gpointer data)
 static void 
 cbt_port_callback(GtkWidget *widget, gpointer data)
 {
-	gchar *gData = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
-	printf("cbt port change: %s\n", gData);
-	pS->m_serial->setPort(gData);
+	try
+	{
+		gchar *gData = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
+		printf("cbt port change: %s\n", gData);
+		pS->m_serial->setPort(gData);
+	}
+	catch (exception &e)
+	{
+		printf("Unhandled Exception: %s\n", e.what());
+		show_errMsg(e.what(), data);
+	}
 }
 
 static void 
 cbt_baudrate_callback(GtkWidget *widget, gpointer data)
 {
-	gchar *gData = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
-	printf("cbt baudrate change: %s\n", gData);
-	pS->m_serial->setBaudrate(atol(gData));
+	try
+	{
+		gchar *gData = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
+		printf("cbt baudrate change: %s\n", gData);
+		pS->m_serial->setBaudrate(atol(gData));
+	}
+	catch (exception &e)
+	{
+		printf("Unhandled Exception: %s\n", e.what());
+		show_errMsg(e.what(), data);
+	}
+}
+
+static void 
+cbt_bytesize_callback(GtkWidget *widget, gpointer data)
+{
+	try
+	{
+		gchar *gData = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
+		printf("cbt bytesize change: %s\n", gData);
+		pS->m_serial->setBytesize((serial::bytesize_t)atoi(gData));
+	}
+	catch (exception &e)
+	{
+		printf("Unhandled Exception: %s\n", e.what());
+		show_errMsg(e.what(), data);
+	}
+}
+
+static void 
+cbt_parity_callback(GtkWidget *widget, gpointer data)
+{
+	try
+	{
+		gchar *gData = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
+		printf("cbt parity change: %s\n", gData);
+		if (0 == strcmp(gData, "none"))
+			pS->m_serial->setParity((serial::parity_t)serial::parity_none);
+		else if (0 == strcmp(gData, "odd"))
+			pS->m_serial->setParity((serial::parity_t)serial::parity_odd);
+		else if (0 == strcmp(gData, "even"))
+			pS->m_serial->setParity((serial::parity_t)serial::parity_even);
+		else if (0 == strcmp(gData, "mark"))
+			pS->m_serial->setParity((serial::parity_t)serial::parity_mark);
+		else if (0 == strcmp(gData, "space"))
+			pS->m_serial->setParity((serial::parity_t)serial::parity_space);
+	}
+	catch (exception &e)
+	{
+		printf("Unhandled Exception: %s\n", e.what());
+		show_errMsg(e.what(), data);
+	}
+}
+
+static void 
+cbt_stopbits_callback(GtkWidget *widget, gpointer data)
+{
+	try
+	{
+		gchar *gData = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
+		printf("cbt stopbits change: %s\n", gData);
+		if (0 == strcmp(gData, "1.5"))
+			pS->m_serial->setStopbits((serial::stopbits_t)serial::stopbits_one_point_five);
+		else
+			pS->m_serial->setStopbits((serial::stopbits_t)atoi(gData));
+	}
+	catch (exception &e)
+	{
+		printf("Unhandled Exception: %s\n", e.what());
+		show_errMsg(e.what(), data);
+	}
+}
+
+static void 
+cbt_flowcontrol_callback(GtkWidget *widget, gpointer data)
+{
+	try
+	{
+		gchar *gData = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
+		printf("cbt flowcontrol change: %s\n", gData);
+		if (0 == strcmp(gData, "none"))
+			pS->m_serial->setFlowcontrol((serial::flowcontrol_t)serial::flowcontrol_none);
+		else if (0 == strcmp(gData, "software"))
+			pS->m_serial->setFlowcontrol((serial::flowcontrol_t)serial::flowcontrol_software);
+		else if (0 == strcmp(gData, "hardware"))
+			pS->m_serial->setFlowcontrol((serial::flowcontrol_t)serial::flowcontrol_hardware);
+	}
+	catch (exception &e)
+	{
+		printf("Unhandled Exception: %s\n", e.what());
+		show_errMsg(e.what(), data);
+	}
 }
 
 int main(int argc, char *argv[])
@@ -135,10 +234,61 @@ int main(int argc, char *argv[])
 	}
 	g_signal_connect(comboBoxText, "changed", G_CALLBACK(cbt_port_callback), (gpointer)window);
 
-	//setBaudrate
-	comboBoxText = gtk_builder_get_object(builder, "cbt_baudrate");
-	pS->m_serial->setBaudrate(atol(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText))));
-	g_signal_connect(comboBoxText, "changed", G_CALLBACK(cbt_baudrate_callback), NULL);
+	try
+	{
+		gchar* gc = NULL;
+
+		//setBaudrate
+		comboBoxText = gtk_builder_get_object(builder, "cbt_baudrate");
+		pS->m_serial->setBaudrate(atol(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText))));
+		g_signal_connect(comboBoxText, "changed", G_CALLBACK(cbt_baudrate_callback), (gpointer)window);
+
+		//setBytesize
+		comboBoxText = gtk_builder_get_object(builder, "cbt_bytesize");
+		pS->m_serial->setBytesize((serial::bytesize_t)atoi(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText))));
+		g_signal_connect(comboBoxText, "changed", G_CALLBACK(cbt_bytesize_callback), (gpointer)window);
+
+		//setParity
+		comboBoxText = gtk_builder_get_object(builder, "cbt_parity");
+		gc = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText));
+		if (0 == strcmp(gc, "none"))
+			pS->m_serial->setParity((serial::parity_t)serial::parity_none);
+		else if (0 == strcmp(gc, "odd"))
+			pS->m_serial->setParity((serial::parity_t)serial::parity_odd);
+		else if (0 == strcmp(gc, "even"))
+			pS->m_serial->setParity((serial::parity_t)serial::parity_even);
+		else if (0 == strcmp(gc, "mark"))
+			pS->m_serial->setParity((serial::parity_t)serial::parity_mark);
+		else if (0 == strcmp(gc, "space"))
+			pS->m_serial->setParity((serial::parity_t)serial::parity_space);
+		g_signal_connect(comboBoxText, "changed", G_CALLBACK(cbt_parity_callback), (gpointer)window);
+
+		//setStopbits
+		comboBoxText = gtk_builder_get_object(builder, "cbt_stopbits");
+		gc = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText));
+		if (0 == strcmp(gc, "1.5"))
+			pS->m_serial->setStopbits((serial::stopbits_t)serial::stopbits_one_point_five);
+		else
+			pS->m_serial->setStopbits((serial::stopbits_t)atoi(gc));
+		g_signal_connect(comboBoxText, "changed", G_CALLBACK(cbt_stopbits_callback), (gpointer)window);
+
+		//setFlowcontrol
+		comboBoxText = gtk_builder_get_object(builder, "cbt_flowcontrol");
+		gc = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText));
+		if (0 == strcmp(gc, "none"))
+			pS->m_serial->setFlowcontrol((serial::flowcontrol_t)serial::flowcontrol_none);
+		else if (0 == strcmp(gc, "software"))
+			pS->m_serial->setFlowcontrol((serial::flowcontrol_t)serial::flowcontrol_software);
+		else if (0 == strcmp(gc, "hardware"))
+			pS->m_serial->setFlowcontrol((serial::flowcontrol_t)serial::flowcontrol_hardware);
+		g_signal_connect(comboBoxText, "changed", G_CALLBACK(cbt_flowcontrol_callback), (gpointer)window);
+	}
+	catch (exception &e)
+	{
+		printf("Unhandled Exception: %s\n", e.what());
+		show_errMsg(e.what(), window);
+	}
+
 
 	g_object_unref(builder);
 
