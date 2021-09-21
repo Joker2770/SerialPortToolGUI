@@ -191,8 +191,6 @@ int my_serial_ctrl::open_port(char* errMsg)
 		if (!this->m_serial->isOpen())
 		{
 			printf("[%s] open failed!\n", szPort);
-			if (NULL != errMsg)
-				sprintf(errMsg, "[%s] open failed!\n", szPort);
 			return -1;
 		}
 	}
@@ -222,7 +220,7 @@ int my_serial_ctrl::close_port(char* errMsg)
 		{
 			printf("Close port failed!\n");
 			if (NULL != errMsg)
-				strcpy(errMsg, "Close port failed!\n");
+				strcat(errMsg, "Close port failed!\n");
 			return -1;
 		}
 	}

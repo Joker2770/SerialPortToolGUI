@@ -214,10 +214,10 @@ int main(int argc, char *argv[])
 	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
 	button = gtk_builder_get_object(builder, "btn_open");
-	g_signal_connect(button, "clicked", G_CALLBACK(open_callback), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(open_callback), (gpointer)window);
 
 	button = gtk_builder_get_object(builder, "btn_close");
-	g_signal_connect(button, "clicked", G_CALLBACK(close_callback), NULL);
+	g_signal_connect(button, "clicked", G_CALLBACK(close_callback), (gpointer)window);
 
 	comboBoxText = gtk_builder_get_object(builder, "cbt_port");
 	//entry_port = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText));
