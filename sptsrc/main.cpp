@@ -27,6 +27,11 @@
 #include <gtk/gtk.h>
 
 my_serial_ctrl *pS = nullptr;
+gchar g_Data_0[16] = "\0";
+gchar g_Data_1[16] = "\0";
+gchar g_Data_2[16] = "\0";
+gchar g_Data_3[16] = "\0";
+gchar g_Data_4[16] = "\0";
 
 static void
 show_errMsg(const gchar* errMsg, gpointer data)
@@ -38,6 +43,7 @@ show_errMsg(const gchar* errMsg, gpointer data)
 					GTK_BUTTONS_OK,
 					"%s",errMsg);
 		gtk_window_set_title(GTK_WINDOW(dialog), "Error");
+		gtk_widget_show_all (dialog);
 		gtk_dialog_run(GTK_DIALOG(dialog));
 		gtk_widget_destroy(dialog);
 }
@@ -187,6 +193,138 @@ cbt_flowcontrol_callback(GtkWidget *widget, gpointer data)
 	}
 }
 
+static void
+dlg_to_entry_0_callback(GtkWidget *widget, gpointer data)
+{
+	memset(g_Data_0, 0, sizeof(g_Data_0));
+	strncpy(g_Data_0, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
+	printf("entry_0 change: %s\n", (char*)g_Data_0);
+}
+
+static void
+dlg_to_entry_1_callback(GtkWidget *widget, gpointer data)
+{
+	memset(g_Data_1, 0, sizeof(g_Data_1));
+	strncpy(g_Data_1, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
+	printf("entry_1 change: %s\n", (char*)g_Data_1);
+}
+
+static void
+dlg_to_entry_2_callback(GtkWidget *widget, gpointer data)
+{
+	memset(g_Data_2, 0, sizeof(g_Data_2));
+	strncpy(g_Data_2, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
+	printf("entry_2 change: %s\n", (char*)g_Data_2);
+}
+
+static void
+dlg_to_entry_3_callback(GtkWidget *widget, gpointer data)
+{
+	memset(g_Data_3, 0, sizeof(g_Data_3));
+	strncpy(g_Data_3, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
+	printf("entry_3 change: %s\n", (char*)g_Data_3);
+}
+
+static void
+dlg_to_entry_4_callback(GtkWidget *widget, gpointer data)
+{
+	memset(g_Data_4, 0, sizeof(g_Data_4));
+	strncpy(g_Data_4, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
+	printf("entry_4 change: %s\n", (char*)g_Data_4);
+}
+
+static void 
+btn_timeout_setting_callback(GtkWidget *widget, gpointer data)
+{
+	GtkWidget *dialog, *label, *content_area, *grid, *entry;
+	GtkDialogFlags flags;
+	// Create the widgets
+	flags = GTK_DIALOG_DESTROY_WITH_PARENT;
+	dialog = gtk_dialog_new_with_buttons ("timeout setting",
+											GTK_WINDOW(data),
+											flags,
+											"apply",
+											GTK_RESPONSE_NONE,
+											NULL);
+	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+	grid = gtk_grid_new();
+
+	label = gtk_label_new ("inter_byte_timeout");
+	entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry), "65535");
+	gtk_grid_attach(GTK_GRID(grid), label, 0, 0, 1, 1);
+	gtk_grid_attach(GTK_GRID(grid), entry, 1, 0, 1, 1);
+	memset(g_Data_0, 0, sizeof(g_Data_0));
+	strcpy(g_Data_0, "65535");
+	g_signal_connect(entry, "changed", G_CALLBACK (dlg_to_entry_0_callback), NULL);
+
+	label = gtk_label_new ("read_timeout_constant");
+	entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry), "1000");
+	gtk_grid_attach(GTK_GRID(grid), label, 0, 1, 1, 1);
+	gtk_grid_attach(GTK_GRID(grid), entry, 1, 1, 1, 1);
+	memset(g_Data_1, 0, sizeof(g_Data_1));
+	strcpy(g_Data_1, "1000");
+	g_signal_connect(entry, "changed", G_CALLBACK (dlg_to_entry_1_callback), NULL);
+
+	label = gtk_label_new ("read_timeout_multiplier");
+	entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry), "0");
+	gtk_grid_attach(GTK_GRID(grid), label, 0, 2, 1, 1);
+	gtk_grid_attach(GTK_GRID(grid), entry, 1, 2, 1, 1);
+	memset(g_Data_2, 0, sizeof(g_Data_2));
+	strcpy(g_Data_2, "0");
+	g_signal_connect(entry, "changed", G_CALLBACK (dlg_to_entry_2_callback), NULL);
+
+	label = gtk_label_new ("write_timeout_constant");
+	entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry), "1000");
+	gtk_grid_attach(GTK_GRID(grid), label, 0, 3, 1, 1);
+	gtk_grid_attach(GTK_GRID(grid), entry, 1, 3, 1, 1);
+	memset(g_Data_3, 0, sizeof(g_Data_3));
+	strcpy(g_Data_3, "1000");
+	g_signal_connect(entry, "changed", G_CALLBACK (dlg_to_entry_3_callback), NULL);
+
+	label = gtk_label_new ("write_timeout_multiplier");
+	entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry), "0");
+	gtk_grid_attach(GTK_GRID(grid), label, 0, 4, 1, 1);
+	gtk_grid_attach(GTK_GRID(grid), entry, 1, 4, 1, 1);
+	memset(g_Data_4, 0, sizeof(g_Data_4));
+	strcpy(g_Data_4, "0");
+	g_signal_connect(entry, "changed", G_CALLBACK (dlg_to_entry_4_callback), NULL);
+
+
+	// Ensure that the dialog box is destroyed when the user responds
+	g_signal_connect_swapped (dialog,
+                           "response",
+                           G_CALLBACK (gtk_widget_destroy),
+                           dialog);
+
+	// Add the label, and show everything we’ve added
+	gtk_container_add (GTK_CONTAINER (content_area), grid);
+	gtk_widget_show_all (dialog);
+	gint result = gtk_dialog_run(GTK_DIALOG(dialog));
+	switch(result)
+	{
+	case GTK_RESPONSE_NONE:
+		try
+		{
+			printf("%s,%s,%s,%s,%s\n", g_Data_0, g_Data_1, g_Data_2, g_Data_3, g_Data_4);
+			pS->m_serial->setTimeout(atol(g_Data_0), atol(g_Data_1), atol(g_Data_2), atol(g_Data_3), atol(g_Data_4));
+		}
+		catch (exception &e)
+		{
+			printf("Unhandled Exception: %s\n", e.what());
+			show_errMsg(e.what(), data);
+		}
+		break;
+	default:
+		break;
+	}
+	gtk_widget_destroy(dialog);
+}
+
 int main(int argc, char *argv[])
 {
 	pS = new my_serial_ctrl();
@@ -218,6 +356,9 @@ int main(int argc, char *argv[])
 
 	button = gtk_builder_get_object(builder, "btn_close");
 	g_signal_connect(button, "clicked", G_CALLBACK(close_callback), (gpointer)window);
+
+	button = gtk_builder_get_object(builder, "btn_timeout_setting");
+	g_signal_connect(button, "clicked", G_CALLBACK(btn_timeout_setting_callback), (gpointer)window);
 
 	comboBoxText = gtk_builder_get_object(builder, "cbt_port");
 	//entry_port = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText));
