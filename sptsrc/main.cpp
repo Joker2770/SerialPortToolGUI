@@ -32,6 +32,8 @@ gchar g_Data_1[16] = "\0";
 gchar g_Data_2[16] = "\0";
 gchar g_Data_3[16] = "\0";
 gchar g_Data_4[16] = "\0";
+gboolean g_hex_output_checked = FALSE;
+gboolean g_hex_send_checked = FALSE;
 
 static void
 show_errMsg(const gchar* errMsg, gpointer data)
@@ -325,6 +327,36 @@ btn_timeout_setting_callback(GtkWidget *widget, gpointer data)
 	gtk_widget_destroy(dialog);
 }
 
+static void
+chk_btn_output_callback(GtkWidget *widget, gpointer data)
+{
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
+	{
+		g_hex_output_checked = TRUE;
+		printf("hex output checked\n");
+	}
+	else
+	{
+		g_hex_output_checked = FALSE;
+		printf("hex output released\n");
+	}
+}
+
+static void
+chk_btn_send_callback(GtkWidget *widget, gpointer data)
+{
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
+	{
+		g_hex_send_checked = TRUE;
+		printf("hex send checked\n");
+	}
+	else
+	{
+		g_hex_send_checked = FALSE;
+		printf("hex send released\n");
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	pS = new my_serial_ctrl();
@@ -333,6 +365,7 @@ int main(int argc, char *argv[])
 	GObject *window = NULL;
 	GObject *comboBoxText = NULL;
 	GObject *button = NULL;
+	GObject *chk_btn = NULL;
 	GError *error = NULL;
 
 	const gchar *entry_port = "/dev/ttyUSB0";
@@ -359,6 +392,12 @@ int main(int argc, char *argv[])
 
 	button = gtk_builder_get_object(builder, "btn_timeout_setting");
 	g_signal_connect(button, "clicked", G_CALLBACK(btn_timeout_setting_callback), (gpointer)window);
+
+	chk_btn = gtk_builder_get_object(builder, "chkbtn_hex_output");
+	g_signal_connect(chk_btn, "released", G_CALLBACK(chk_btn_output_callback), NULL);
+
+	chk_btn = gtk_builder_get_object(builder, "chkbtn_hex_send");
+	g_signal_connect(chk_btn, "released", G_CALLBACK(chk_btn_send_callback), NULL);
 
 	comboBoxText = gtk_builder_get_object(builder, "cbt_port");
 	//entry_port = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText));
