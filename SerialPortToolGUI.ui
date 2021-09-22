@@ -132,6 +132,7 @@
                                   <object class="GtkTextView" id="home_tv_output">
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
+                                    <property name="editable">False</property>
                                     <property name="monospace">True</property>
                                   </object>
                                 </child>
