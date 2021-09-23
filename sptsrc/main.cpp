@@ -246,13 +246,15 @@ btn_timeout_setting_callback(GtkWidget *widget, gpointer data)
 											GTK_WINDOW(data),
 											flags,
 											"apply",
-											GTK_RESPONSE_NONE,
+											GTK_RESPONSE_OK,
 											NULL);
+	gtk_dialog_set_default_response(GTK_DIALOG(dialog),GTK_RESPONSE_OK);
 	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 	grid = gtk_grid_new();
 
 	label = gtk_label_new ("inter_byte_timeout");
 	entry = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(entry), 8);
 	gtk_entry_set_text(GTK_ENTRY(entry), "65535");
 	gtk_grid_attach(GTK_GRID(grid), label, 0, 0, 1, 1);
 	gtk_grid_attach(GTK_GRID(grid), entry, 1, 0, 1, 1);
@@ -262,6 +264,7 @@ btn_timeout_setting_callback(GtkWidget *widget, gpointer data)
 
 	label = gtk_label_new ("read_timeout_constant");
 	entry = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(entry), 8);
 	gtk_entry_set_text(GTK_ENTRY(entry), "1000");
 	gtk_grid_attach(GTK_GRID(grid), label, 0, 1, 1, 1);
 	gtk_grid_attach(GTK_GRID(grid), entry, 1, 1, 1, 1);
@@ -271,6 +274,7 @@ btn_timeout_setting_callback(GtkWidget *widget, gpointer data)
 
 	label = gtk_label_new ("read_timeout_multiplier");
 	entry = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(entry), 8);
 	gtk_entry_set_text(GTK_ENTRY(entry), "0");
 	gtk_grid_attach(GTK_GRID(grid), label, 0, 2, 1, 1);
 	gtk_grid_attach(GTK_GRID(grid), entry, 1, 2, 1, 1);
@@ -280,6 +284,7 @@ btn_timeout_setting_callback(GtkWidget *widget, gpointer data)
 
 	label = gtk_label_new ("write_timeout_constant");
 	entry = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(entry), 8);
 	gtk_entry_set_text(GTK_ENTRY(entry), "1000");
 	gtk_grid_attach(GTK_GRID(grid), label, 0, 3, 1, 1);
 	gtk_grid_attach(GTK_GRID(grid), entry, 1, 3, 1, 1);
@@ -289,6 +294,7 @@ btn_timeout_setting_callback(GtkWidget *widget, gpointer data)
 
 	label = gtk_label_new ("write_timeout_multiplier");
 	entry = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(entry), 8);
 	gtk_entry_set_text(GTK_ENTRY(entry), "0");
 	gtk_grid_attach(GTK_GRID(grid), label, 0, 4, 1, 1);
 	gtk_grid_attach(GTK_GRID(grid), entry, 1, 4, 1, 1);
@@ -296,20 +302,13 @@ btn_timeout_setting_callback(GtkWidget *widget, gpointer data)
 	strcpy(g_Data_4, "0");
 	g_signal_connect(entry, "changed", G_CALLBACK (dlg_to_entry_4_callback), NULL);
 
-
-	// Ensure that the dialog box is destroyed when the user responds
-	g_signal_connect_swapped (dialog,
-                           "response",
-                           G_CALLBACK (gtk_widget_destroy),
-                           dialog);
-
 	// Add the label, and show everything we’ve added
 	gtk_container_add (GTK_CONTAINER (content_area), grid);
 	gtk_widget_show_all (dialog);
 	gint result = gtk_dialog_run(GTK_DIALOG(dialog));
 	switch(result)
 	{
-	case GTK_RESPONSE_NONE:
+	case GTK_RESPONSE_OK:
 		try
 		{
 			printf("%s,%s,%s,%s,%s\n", g_Data_0, g_Data_1, g_Data_2, g_Data_3, g_Data_4);
@@ -324,6 +323,13 @@ btn_timeout_setting_callback(GtkWidget *widget, gpointer data)
 	default:
 		break;
 	}
+
+	// Ensure that the dialog box is destroyed when the user responds
+	g_signal_connect_swapped (dialog,
+                           "response",
+                           G_CALLBACK (gtk_widget_destroy),
+                           dialog);
+
 	gtk_widget_destroy(dialog);
 }
 
