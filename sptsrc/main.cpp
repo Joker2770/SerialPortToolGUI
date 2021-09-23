@@ -24,7 +24,11 @@
 */
 
 #include "port_control.h"
+#include "utility.h"
 #include <gtk/gtk.h>
+
+#define MAX_SEND (1024*100)
+#define MAX_OUTPUT (16)
 
 my_serial_ctrl *pS = nullptr;
 gchar g_Data_0[16] = "\0";
@@ -32,6 +36,8 @@ gchar g_Data_1[16] = "\0";
 gchar g_Data_2[16] = "\0";
 gchar g_Data_3[16] = "\0";
 gchar g_Data_4[16] = "\0";
+gchar *g_text2send = NULL;
+gchar *g_text2output = NULL;
 gboolean g_hex_output_checked = FALSE;
 gboolean g_hex_send_checked = FALSE;
 
@@ -200,7 +206,7 @@ dlg_to_entry_0_callback(GtkWidget *widget, gpointer data)
 {
 	memset(g_Data_0, 0, sizeof(g_Data_0));
 	strncpy(g_Data_0, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
-	printf("entry_0 change: %s\n", (char*)g_Data_0);
+	g_print("entry_0 change: %s\n", (char*)g_Data_0);
 }
 
 static void
@@ -208,7 +214,7 @@ dlg_to_entry_1_callback(GtkWidget *widget, gpointer data)
 {
 	memset(g_Data_1, 0, sizeof(g_Data_1));
 	strncpy(g_Data_1, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
-	printf("entry_1 change: %s\n", (char*)g_Data_1);
+	g_print("entry_1 change: %s\n", (char*)g_Data_1);
 }
 
 static void
@@ -216,7 +222,7 @@ dlg_to_entry_2_callback(GtkWidget *widget, gpointer data)
 {
 	memset(g_Data_2, 0, sizeof(g_Data_2));
 	strncpy(g_Data_2, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
-	printf("entry_2 change: %s\n", (char*)g_Data_2);
+	g_print("entry_2 change: %s\n", (char*)g_Data_2);
 }
 
 static void
@@ -224,7 +230,7 @@ dlg_to_entry_3_callback(GtkWidget *widget, gpointer data)
 {
 	memset(g_Data_3, 0, sizeof(g_Data_3));
 	strncpy(g_Data_3, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
-	printf("entry_3 change: %s\n", (char*)g_Data_3);
+	g_print("entry_3 change: %s\n", (char*)g_Data_3);
 }
 
 static void
@@ -232,7 +238,7 @@ dlg_to_entry_4_callback(GtkWidget *widget, gpointer data)
 {
 	memset(g_Data_4, 0, sizeof(g_Data_4));
 	strncpy(g_Data_4, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
-	printf("entry_4 change: %s\n", (char*)g_Data_4);
+	g_print("entry_4 change: %s\n", (char*)g_Data_4);
 }
 
 static void 
@@ -311,12 +317,12 @@ btn_timeout_setting_callback(GtkWidget *widget, gpointer data)
 	case GTK_RESPONSE_OK:
 		try
 		{
-			printf("%s,%s,%s,%s,%s\n", g_Data_0, g_Data_1, g_Data_2, g_Data_3, g_Data_4);
+			g_print("%s,%s,%s,%s,%s\n", g_Data_0, g_Data_1, g_Data_2, g_Data_3, g_Data_4);
 			pS->m_serial->setTimeout(atol(g_Data_0), atol(g_Data_1), atol(g_Data_2), atol(g_Data_3), atol(g_Data_4));
 		}
 		catch (exception &e)
 		{
-			printf("Unhandled Exception: %s\n", e.what());
+			g_print("Unhandled Exception: %s\n", e.what());
 			show_errMsg(e.what(), data);
 		}
 		break;
@@ -339,12 +345,12 @@ chk_btn_output_callback(GtkWidget *widget, gpointer data)
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
 	{
 		g_hex_output_checked = TRUE;
-		printf("hex output checked\n");
+		g_print("hex output checked\n");
 	}
 	else
 	{
 		g_hex_output_checked = FALSE;
-		printf("hex output released\n");
+		g_print("hex output released\n");
 	}
 }
 
@@ -354,17 +360,79 @@ chk_btn_send_callback(GtkWidget *widget, gpointer data)
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
 	{
 		g_hex_send_checked = TRUE;
-		printf("hex send checked\n");
+		g_print("hex send checked\n");
 	}
 	else
 	{
 		g_hex_send_checked = FALSE;
-		printf("hex send released\n");
+		g_print("hex send released\n");
 	}
+}
+
+static void
+text_view_send_callback(GtkWidget *widget, gpointer data)
+{
+	gchar* text = NULL;
+	GtkTextIter start, end;
+	gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(widget), &start, &end);
+
+	const GtkTextIter s = start, e = end;
+	text = gtk_text_buffer_get_text(GTK_TEXT_BUFFER(widget), &s, &e, TRUE);
+
+	g_print("text view(send):%s\n", text);
+
+	if (NULL != g_text2send)
+	{
+		memset(g_text2send, 0, MAX_SEND*sizeof(gchar));
+		memcpy(g_text2send, (gchar*)text, MAX_SEND*sizeof(gchar));
+	}
+}
+
+static void 
+text_view_output_callback(GtkWidget *widget, gpointer data)
+{
+	if (NULL != pS)
+	{
+		gchar errMsg[256] = "\0";
+		pS->send_data(g_text2send, errMsg, g_hex_send_checked);
+
+		drop_data_by_len(g_text2output, MAX_OUTPUT, 2);
+		strcat(g_text2output, ">>");
+		drop_data_by_len(g_text2output, MAX_OUTPUT, strlen(g_text2send)+1);
+		strcat(g_text2output, g_text2send);
+		strcat(g_text2output, "\n");
+
+		if (strlen(errMsg)>0)
+		{
+			drop_data_by_len(g_text2output, MAX_OUTPUT, strlen(errMsg)+1);
+			strcat(g_text2output, errMsg);
+			strcat(g_text2output, "\n");
+		}
+	}
+	GtkTextBuffer *text_buffer = gtk_text_buffer_new(NULL);
+	gtk_text_buffer_set_text(GTK_TEXT_BUFFER(text_buffer), g_text2output, strlen(g_text2output));
+	gtk_text_view_set_buffer(GTK_TEXT_VIEW(data), text_buffer);
+
+	g_object_unref(text_buffer);
 }
 
 int main(int argc, char *argv[])
 {
+	g_text2send = (gchar*)malloc(MAX_SEND*sizeof(gchar));
+	if (NULL == g_text2send)
+		return -1;
+
+	g_text2output = (gchar*)malloc(MAX_OUTPUT*sizeof(gchar));
+	if (NULL == g_text2output)
+	{
+		if (NULL != g_text2send)
+		{
+			free(g_text2send);
+			g_text2send = NULL;
+		}
+		return -1;
+	}
+
 	pS = new my_serial_ctrl();
 
 	GtkBuilder *builder = NULL;
@@ -372,7 +440,10 @@ int main(int argc, char *argv[])
 	GObject *comboBoxText = NULL;
 	GObject *button = NULL;
 	GObject *chk_btn = NULL;
+	GObject *textView = NULL;
 	GError *error = NULL;
+
+	GtkTextBuffer *buffer = NULL;
 
 	const gchar *entry_port = "/dev/ttyUSB0";
 	const gchar *entry_baud = "57600";
@@ -404,6 +475,14 @@ int main(int argc, char *argv[])
 
 	chk_btn = gtk_builder_get_object(builder, "chkbtn_hex_send");
 	g_signal_connect(chk_btn, "released", G_CALLBACK(chk_btn_send_callback), NULL);
+
+	textView = gtk_builder_get_object(builder, "home_tv_send");
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
+	g_signal_connect(buffer, "changed", G_CALLBACK(text_view_send_callback), NULL);
+
+	textView = gtk_builder_get_object(builder, "home_tv_output");
+	button = gtk_builder_get_object(builder, "btn_send");
+	g_signal_connect(button, "clicked", G_CALLBACK(text_view_output_callback), (gpointer)textView);
 
 	comboBoxText = gtk_builder_get_object(builder, "cbt_port");
 	//entry_port = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText));
@@ -485,6 +564,18 @@ int main(int argc, char *argv[])
 	{
 		delete pS;
 		pS = NULL;
+	}
+
+	if (NULL != g_text2send)
+	{
+		free(g_text2send);
+		g_text2send = NULL;
+	}
+
+	if (NULL != g_text2output)
+	{
+		free(g_text2output);
+		g_text2output = NULL;
 	}
 
 	return 0;

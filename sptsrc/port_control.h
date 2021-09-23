@@ -55,8 +55,8 @@ public:
 	void show_port_set(void);
 	int show_port_more_set(void);
 	int port_set(const char *sArg1, const char *sArg2);
-	int send_data(const char *sData, bool bHex = false);
-	int receive_data(uint32_t sData, bool bHex = false);
+	int send_data(const char *sData, char* errMsg, bool bHex = false);
+	int receive_data(uint32_t sData, char* errMsg, bool bHex = false);
 
 //private:
 	serial::Serial *m_serial;

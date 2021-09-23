@@ -24,13 +24,32 @@
 */
 
 #include "utility.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <algorithm>
 
 string trimString(string res)
 {
-    res.erase(remove_if(res.begin(), res.end(), std::isspace), res.end());
+    res.erase(remove(res.begin(), res.end(), ' '), res.end());
     res.erase(remove(res.begin(), res.end(), '\t'), res.end());
     res.erase(remove(res.begin(), res.end(), '\r'), res.end());
     res.erase(remove(res.begin(), res.end(), '\n'), res.end());
     return res;
+}
+
+void drop_data_by_len(char* src, unsigned int i_max_len, unsigned int i_move_len)
+{
+    printf("*src len: %lu\n", strlen(src));
+    if (i_move_len > i_max_len)
+    {
+        memset(src, 0, i_max_len);
+    }
+    else if (strlen(src) + i_move_len > i_max_len - 4)
+    {
+        printf("src len: %lu\n", strlen(src));
+        if (strlen(src) > i_move_len)
+            memmove(src, src + i_move_len, strlen(src) - i_move_len);
+    }
 }
 

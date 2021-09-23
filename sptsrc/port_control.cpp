@@ -366,7 +366,7 @@ int my_serial_ctrl::port_set(const char *szCommand, const char *szPara)
 	return 0;
 }
 
-int my_serial_ctrl::send_data(const char *szData, bool b_hex)
+int my_serial_ctrl::send_data(const char *szData, char* errMsg, bool b_hex)
 {
 	try
 	{
@@ -396,19 +396,23 @@ int my_serial_ctrl::send_data(const char *szData, bool b_hex)
 	catch (exception &e)
 	{
 		printf("Unhandled Exception: %s\n", e.what());
+		if (NULL != errMsg)
+			strncpy(errMsg, e.what(), 256);
 	}
 	catch (int erret)
 	{
 		if (-1 == erret)
 		{
 			printf("Internal error!\n");
+			if (NULL != errMsg)
+				strncpy(errMsg, "Internal error!", strlen("Internal error!"));
 		}
 	}
 
 	return 0;
 }
 
-int my_serial_ctrl::receive_data(uint32_t ulength, bool b_hex)
+int my_serial_ctrl::receive_data(uint32_t ulength, char* errMsg, bool b_hex)
 {
 	try
 	{
@@ -436,6 +440,8 @@ int my_serial_ctrl::receive_data(uint32_t ulength, bool b_hex)
 	catch (exception &e)
 	{
 		printf("Unhandled Exception: %s\n", e.what());
+		if (NULL != errMsg)
+			strncpy(errMsg, e.what(), 256);
 	}
 
 	return 0;
