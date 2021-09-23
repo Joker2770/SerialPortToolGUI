@@ -133,6 +133,8 @@
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
                                     <property name="editable">False</property>
+                                    <property name="wrap-mode">word</property>
+                                    <property name="indent">2</property>
                                     <property name="monospace">True</property>
                                   </object>
                                 </child>
@@ -151,7 +153,7 @@
                                   <object class="GtkLabel">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
-                                    <property name="label" translatable="yes">max out buffer</property>
+                                    <property name="label" translatable="yes">read buffer length</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -160,11 +162,11 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkEntry" id="entry_max_out_buffer">
+                                  <object class="GtkEntry" id="entry_read_buf_len">
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
-                                    <property name="max-length">7</property>
-                                    <property name="text" translatable="yes">512</property>
+                                    <property name="max-length">5</property>
+                                    <property name="text" translatable="yes">64</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -264,6 +266,7 @@
                                   <object class="GtkTextView" id="home_tv_send">
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
+                                    <property name="wrap-mode">word</property>
                                     <property name="monospace">True</property>
                                   </object>
                                 </child>
@@ -275,65 +278,28 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkBox">
+                              <object class="GtkButtonBox">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="layout-style">end</property>
                                 <child>
-                                  <object class="GtkLabel">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="label" translatable="yes">max send buffer</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkEntry" id="entry_max_send_buffer">
+                                  <object class="GtkButton" id="btn_send">
+                                    <property name="label" translatable="yes">send</property>
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
-                                    <property name="max-length">7</property>
-                                    <property name="text" translatable="yes">128</property>
+                                    <property name="receives-default">True</property>
+                                    <property name="image-position">right</property>
                                   </object>
                                   <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkButtonBox">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="layout-style">end</property>
-                                    <child>
-                                      <object class="GtkButton" id="btn_send">
-                                        <property name="label" translatable="yes">send</property>
-                                        <property name="visible">True</property>
-                                        <property name="can-focus">True</property>
-                                        <property name="receives-default">True</property>
-                                        <property name="image-position">right</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">True</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="pack-type">end</property>
-                                    <property name="position">2</property>
+                                    <property name="expand">True</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
                                   </packing>
                                 </child>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
-                                <property name="fill">True</property>
+                                <property name="fill">False</property>
                                 <property name="position">2</property>
                               </packing>
                             </child>
