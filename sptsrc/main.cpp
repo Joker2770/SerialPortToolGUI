@@ -37,6 +37,7 @@ gchar g_Data_2[16] = "\0";
 gchar g_Data_3[16] = "\0";
 gchar g_Data_4[16] = "\0";
 gchar *g_text2send = NULL;
+gchar *g_crc16_in = NULL;
 gboolean g_hex_output_checked = FALSE;
 gboolean g_hex_send_checked = FALSE;
 
@@ -500,6 +501,25 @@ text_view_send_callback(GtkWidget *widget, gpointer data)
 	}
 }
 
+static void
+text_view_crc16_in_callback(GtkWidget *widget, gpointer data)
+{
+	gchar* text = NULL;
+	GtkTextIter start, end;
+	gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(widget), &start, &end);
+
+	const GtkTextIter s = start, e = end;
+	text = gtk_text_buffer_get_text(GTK_TEXT_BUFFER(widget), &s, &e, TRUE);
+
+	g_print("text view(send):%s\n", text);
+
+	if (NULL != g_crc16_in)
+	{
+		memset(g_crc16_in, 0, MAX_SEND*sizeof(gchar));
+		memcpy(g_crc16_in, (gchar*)text, MAX_SEND*sizeof(gchar));
+	}
+}
+
 static void 
 text_view_output_callback(GtkWidget *widget, gpointer data)
 {
@@ -565,6 +585,32 @@ text_view_output_callback(GtkWidget *widget, gpointer data)
 }
 
 static void 
+tv_crc16_callback(GtkWidget *widget, gpointer data)
+{
+	gchar g_out[8] = "\0";
+	memset(g_out, 0, sizeof(g_out));
+
+	if (g_crc16_in[0] != '\0')
+	{
+		string s2s = string(g_crc16_in);
+		s2s = trimString(s2s);
+
+		unsigned char szDest[1024 * 100] = "";
+		memset(szDest, 0, sizeof(szDest));
+		uint32_t ilen = 0;
+		int iret = StringToHex((char *)s2s.c_str(), szDest, &ilen);
+
+		unsigned int crcVal = crc16(szDest, ilen);
+
+		sprintf(g_out, "%02x %02x ", (crcVal & 0x00ff), ((crcVal & 0xff00) >> 8));
+	}
+
+	//GtkTextIter start,end;
+	//gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(data),&start,&end);
+	gtk_text_buffer_set_text(GTK_TEXT_BUFFER(data), g_out, strlen(g_out));
+}
+
+static void 
 clear_callback(GtkWidget *widget, gpointer data)
 {
 	GtkTextIter start,end;
@@ -577,6 +623,8 @@ int main(int argc, char *argv[])
 	g_text2send = (gchar*)malloc(MAX_SEND*sizeof(gchar));
 	if (NULL == g_text2send)
 		return -1;
+	
+	g_crc16_in = (gchar*)malloc(MAX_SEND*sizeof(gchar));
 
 	pS = new my_serial_ctrl();
 
@@ -624,19 +672,25 @@ int main(int argc, char *argv[])
 	chk_btn = gtk_builder_get_object(builder, "chkbtn_hex_send");
 	g_signal_connect(chk_btn, "released", G_CALLBACK(chk_btn_send_callback), NULL);
 
-	textView = gtk_builder_get_object(builder, "home_tv_send");
+	//textView = gtk_builder_get_object(builder, "home_tv_send");
 	//buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
 	textBuffer = gtk_builder_get_object(builder, "textbuffer_send");
 	g_signal_connect(textBuffer, "changed", G_CALLBACK(text_view_send_callback), NULL);
 	button = gtk_builder_get_object(builder, "btn_clear_send");
 	g_signal_connect(button, "clicked", G_CALLBACK(clear_callback), (gpointer)textBuffer);
 
-	textView = gtk_builder_get_object(builder, "home_tv_output");
+	//textView = gtk_builder_get_object(builder, "home_tv_output");
 	textBuffer = gtk_builder_get_object(builder, "textbuffer_output");
 	button = gtk_builder_get_object(builder, "btn_send");
 	g_signal_connect(button, "clicked", G_CALLBACK(text_view_output_callback), (gpointer)textBuffer);
 	button = gtk_builder_get_object(builder, "btn_clear_output");
 	g_signal_connect(button, "clicked", G_CALLBACK(clear_callback), (gpointer)textBuffer);
+
+	textBuffer = gtk_builder_get_object(builder, "textBuffer_utility_crc16_in");
+	g_signal_connect(textBuffer, "changed", G_CALLBACK(text_view_crc16_in_callback), NULL);
+	button = gtk_builder_get_object(builder, "btn_calculate");
+	textBuffer = gtk_builder_get_object(builder, "textBuffer_utility_crc16_out");
+	g_signal_connect(button, "clicked", G_CALLBACK(tv_crc16_callback), (gpointer)textBuffer);
 
 	entry = gtk_builder_get_object(builder, "entry_read_buf_len");
 	g_signal_connect(entry, "changed", G_CALLBACK(entry_callback), NULL);
@@ -721,6 +775,12 @@ int main(int argc, char *argv[])
 	{
 		delete pS;
 		pS = NULL;
+	}
+
+	if (NULL != g_crc16_in)
+	{
+		free(g_crc16_in);
+		g_crc16_in = NULL;
 	}
 
 	if (NULL != g_text2send)

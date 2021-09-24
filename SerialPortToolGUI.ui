@@ -832,7 +832,7 @@
                         <property name="xalign">1</property>
                         <property name="xscale">0.20000000298023224</property>
                         <child>
-                          <object class="GtkButton">
+                          <object class="GtkButton" id="btn_calculate">
                             <property name="label" translatable="yes">calculate</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
