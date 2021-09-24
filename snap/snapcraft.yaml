@@ -11,7 +11,7 @@ confinement: strict # use 'strict' once you have the right plugs and slots
 base: core18
 
 apps:
- SerialPortToolGUI:
+  serialporttoolgui:
     command: SerialPortToolGUI
     extensions: [gnome-3-28]
     plugs:
@@ -27,7 +27,7 @@ layout:
     bind-file: $SNAP/usr/local/bin/SerialPortToolGUI.ui
 
 parts:
- SerialPortToolGUI:
+  serialporttoolgui:
     # See 'snapcraft plugins'
     plugin: cmake
     source: https://github.com/Joker2770/SerialPortToolGUI.git
