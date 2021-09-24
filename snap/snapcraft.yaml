@@ -23,7 +23,7 @@ apps:
       - serial-port
       
 layout:
-  SerialPortToolGUI.ui:
+  /usr/local/bin/SerialPortToolGUI.ui:
     bind-file: $SNAP/usr/local/bin/SerialPortToolGUI.ui
 
 parts:

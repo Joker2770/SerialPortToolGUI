@@ -646,9 +646,12 @@ int main(int argc, char *argv[])
 	builder = gtk_builder_new();
 	if (gtk_builder_add_from_file(builder, "SerialPortToolGUI.ui", &error) == 0)
 	{
-		g_printerr("Error loading file: %s\n", error->message);
-		g_clear_error(&error);
-		return 1;
+		if (gtk_builder_add_from_file(builder, "/usr/local/bin/SerialPortToolGUI.ui", &error) == 0)
+		{
+			g_printerr("Error loading file: %s\n", error->message);
+			g_clear_error(&error);
+			return 1;
+		}
 	}
 
 	window = gtk_builder_get_object(builder, "mainWindow");
