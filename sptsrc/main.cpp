@@ -249,6 +249,111 @@ dlg_to_entry_4_callback(GtkWidget *widget, gpointer data)
 }
 
 static void 
+dlg_ms_cbt_0_callback(GtkWidget *widget, gpointer data)
+{
+	try
+	{
+		if (strcmp(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget)), "FALSE") == 0)
+			pS->m_serial->setRTS(false);
+		else
+			pS->m_serial->setRTS(true);
+	}
+	catch (exception &e)
+	{
+		printf("Unhandled Exception: %s\n", e.what());
+		show_errMsg(e.what(), data);
+	}
+}
+
+static void 
+dlg_ms_cbt_1_callback(GtkWidget *widget, gpointer data)
+{
+	try
+	{
+		if (strcmp(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget)), "FALSE") == 0)
+			pS->m_serial->setDTR(false);
+		else
+			pS->m_serial->setDTR(true);
+	}
+	catch (exception &e)
+	{
+		printf("Unhandled Exception: %s\n", e.what());
+		show_errMsg(e.what(), data);
+	}
+}
+
+static void 
+dlg_ms_cbt_2_callback(GtkWidget *widget, gpointer data)
+{
+	try
+	{
+		if (strcmp(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget)), "FALSE") == 0)
+			pS->m_serial->setBreak(false);
+		else
+			pS->m_serial->setBreak(true);
+	}
+	catch (exception &e)
+	{
+		printf("Unhandled Exception: %s\n", e.what());
+		show_errMsg(e.what(), data);
+	}
+}
+
+static void 
+btn_more_setting_callback(GtkWidget *widget, gpointer data)
+{
+	GtkWidget *dialog, *label, *content_area, *grid, *comboBoxText;
+	GtkDialogFlags flags;
+	// Create the widgets
+	flags = GTK_DIALOG_DESTROY_WITH_PARENT;
+	dialog = gtk_dialog_new_with_buttons ("more setting",
+											GTK_WINDOW(data),
+											flags,
+											NULL,
+											NULL);
+	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+	grid = gtk_grid_new();
+
+	label = gtk_label_new ("RTS");
+	comboBoxText = gtk_combo_box_text_new();
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBoxText), "FALSE");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBoxText), "TRUE");
+	gtk_grid_attach(GTK_GRID(grid), label, 0, 0, 1, 1);
+	gtk_grid_attach(GTK_GRID(grid), comboBoxText, 1, 0, 1, 1);
+	g_signal_connect(comboBoxText, "changed", G_CALLBACK (dlg_ms_cbt_0_callback), data);
+
+	label = gtk_label_new ("DTR");
+	comboBoxText = gtk_combo_box_text_new();
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBoxText), "FALSE");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBoxText), "TRUE");
+	gtk_grid_attach(GTK_GRID(grid), label, 0, 1, 1, 1);
+	gtk_grid_attach(GTK_GRID(grid), comboBoxText, 1, 1, 1, 1);
+	g_signal_connect(comboBoxText, "changed", G_CALLBACK (dlg_ms_cbt_1_callback), data);
+
+	label = gtk_label_new ("break");
+	comboBoxText = gtk_combo_box_text_new();
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBoxText), "FALSE");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBoxText), "TRUE");
+	gtk_grid_attach(GTK_GRID(grid), label, 0, 2, 1, 1);
+	gtk_grid_attach(GTK_GRID(grid), comboBoxText, 1, 2, 1, 1);
+	g_signal_connect(comboBoxText, "changed", G_CALLBACK (dlg_ms_cbt_2_callback), data);
+
+	// Add the label, and show everything we’ve added
+	gtk_container_add (GTK_CONTAINER (content_area), grid);
+
+	gtk_widget_show_all (dialog);
+	gtk_dialog_run(GTK_DIALOG(dialog));
+
+	// Ensure that the dialog box is destroyed when the user responds
+	g_signal_connect_swapped (dialog,
+                           "response",
+                           G_CALLBACK (gtk_widget_destroy),
+                           dialog);
+
+	gtk_widget_destroy(dialog);
+}
+
+static void 
 btn_timeout_setting_callback(GtkWidget *widget, gpointer data)
 {
 	GtkWidget *dialog, *label, *content_area, *grid, *entry;
@@ -509,6 +614,9 @@ int main(int argc, char *argv[])
 
 	button = gtk_builder_get_object(builder, "btn_timeout_setting");
 	g_signal_connect(button, "clicked", G_CALLBACK(btn_timeout_setting_callback), (gpointer)window);
+
+	button = gtk_builder_get_object(builder, "btn_more_setting");
+	g_signal_connect(button, "clicked", G_CALLBACK(btn_more_setting_callback), (gpointer)window);
 
 	chk_btn = gtk_builder_get_object(builder, "chkbtn_hex_output");
 	g_signal_connect(chk_btn, "released", G_CALLBACK(chk_btn_output_callback), NULL);
