@@ -459,6 +459,14 @@ text_view_output_callback(GtkWidget *widget, gpointer data)
 	}
 }
 
+static void 
+clear_callback(GtkWidget *widget, gpointer data)
+{
+	GtkTextIter start,end;
+	gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(data), &start, &end);
+	gtk_text_buffer_delete(GTK_TEXT_BUFFER(data), &start,&end);
+}
+
 int main(int argc, char *argv[])
 {
 	g_text2send = (gchar*)malloc(MAX_SEND*sizeof(gchar));
@@ -512,11 +520,15 @@ int main(int argc, char *argv[])
 	//buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
 	textBuffer = gtk_builder_get_object(builder, "textbuffer_send");
 	g_signal_connect(textBuffer, "changed", G_CALLBACK(text_view_send_callback), NULL);
+	button = gtk_builder_get_object(builder, "btn_clear_send");
+	g_signal_connect(button, "clicked", G_CALLBACK(clear_callback), (gpointer)textBuffer);
 
 	textView = gtk_builder_get_object(builder, "home_tv_output");
-	button = gtk_builder_get_object(builder, "btn_send");
 	textBuffer = gtk_builder_get_object(builder, "textbuffer_output");
+	button = gtk_builder_get_object(builder, "btn_send");
 	g_signal_connect(button, "clicked", G_CALLBACK(text_view_output_callback), (gpointer)textBuffer);
+	button = gtk_builder_get_object(builder, "btn_clear_output");
+	g_signal_connect(button, "clicked", G_CALLBACK(clear_callback), (gpointer)textBuffer);
 
 	entry = gtk_builder_get_object(builder, "entry_read_buf_len");
 	g_signal_connect(entry, "changed", G_CALLBACK(entry_callback), NULL);
