@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=0.0.1_20210924
+Encoding=UTF-8
+Name=serialporttoolgui
+Comment=A simple Linux system resources monitor.
+Exec=serialporttoolgui
+Terminal=false
+Type=Application
+Categories=Graphics;Development;
+Icon=${SNAP}/meta/gui/SerialPortToolGUI.png
