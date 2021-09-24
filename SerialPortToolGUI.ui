@@ -19,6 +19,8 @@
  -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
+  <object class="GtkTextBuffer" id="textbuffer_output"/>
+  <object class="GtkTextBuffer" id="textbuffer_send"/>
   <object class="GtkWindow" id="mainWindow">
     <property name="can-focus">False</property>
     <property name="default-width">640</property>
@@ -135,6 +137,7 @@
                                     <property name="editable">False</property>
                                     <property name="wrap-mode">word</property>
                                     <property name="indent">2</property>
+                                    <property name="buffer">textbuffer_output</property>
                                     <property name="monospace">True</property>
                                   </object>
                                 </child>
@@ -269,6 +272,7 @@
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
                                     <property name="wrap-mode">word</property>
+                                    <property name="buffer">textbuffer_send</property>
                                     <property name="monospace">True</property>
                                   </object>
                                 </child>
