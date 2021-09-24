@@ -30,6 +30,8 @@
 using namespace std;
 
 string trimString(string);
+string insert_space_split_2(const char*);
+unsigned int crc16(unsigned char const* PucY, unsigned char UcX);
 
 #endif
 

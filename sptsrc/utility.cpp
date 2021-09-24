@@ -38,3 +38,45 @@ string trimString(string res)
     return res;
 }
 
+string insert_space_split_2(const char * src)
+{
+    string sDes;
+    char szTmp[4] = "\0";
+    memset(szTmp, 0, sizeof(szTmp));
+
+    printf("src: %s\n", src);
+    for (int i = 0; i < strlen(src); i++)
+    {
+        sprintf(szTmp, "%c", src[i]);
+        sDes += szTmp;
+        if ((i%2) == 1)
+            sDes += " ";
+    }
+    printf("src insert space: %s\n", sDes.c_str());
+
+    return sDes;
+}
+
+unsigned int crc16(unsigned char const* PucY, unsigned char UcX)
+{
+	unsigned short int  uiCrcValue = 0xFFFF;
+
+	for (unsigned char ucI = 0; ucI < UcX; ucI++)
+	{
+		uiCrcValue = uiCrcValue ^ *(PucY + ucI);
+		for (unsigned char ucJ = 0; ucJ < 8; ucJ++)
+		{
+			if (uiCrcValue & 0x0001)
+			{
+				uiCrcValue = (uiCrcValue >> 1) ^ 0x8408;
+			}
+			else
+			{
+				uiCrcValue = (uiCrcValue >> 1);
+			}
+		}
+	}
+
+	return uiCrcValue;
+}
+

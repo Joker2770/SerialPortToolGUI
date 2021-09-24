@@ -28,16 +28,15 @@
 #include <gtk/gtk.h>
 
 #define MAX_SEND (1024*100)
-#define MAX_OUTPUT (16)
 
 my_serial_ctrl *pS = nullptr;
+gchar g_data_buf_len[8] = "64";
 gchar g_Data_0[16] = "\0";
 gchar g_Data_1[16] = "\0";
 gchar g_Data_2[16] = "\0";
 gchar g_Data_3[16] = "\0";
 gchar g_Data_4[16] = "\0";
 gchar *g_text2send = NULL;
-gchar *g_text2output = NULL;
 gboolean g_hex_output_checked = FALSE;
 gboolean g_hex_send_checked = FALSE;
 
@@ -199,6 +198,14 @@ cbt_flowcontrol_callback(GtkWidget *widget, gpointer data)
 		printf("Unhandled Exception: %s\n", e.what());
 		show_errMsg(e.what(), data);
 	}
+}
+
+static void
+entry_callback(GtkWidget *widget, gpointer data)
+{
+	memset(g_data_buf_len, 0, sizeof(g_data_buf_len));
+	strncpy(g_data_buf_len, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 5);
+	g_print("entry buf len change: %s\n", (char*)g_data_buf_len);
 }
 
 static void
@@ -393,32 +400,58 @@ text_view_output_callback(GtkWidget *widget, gpointer data)
 {
 	if (NULL != pS)
 	{
-		gchar errMsg[256] = "\0";
+		gchar errMsg_s[256] = "\0";
 		gchar g_out[1024*100*4] = "\0";
 		int i_ret_s, i_ret_r;
 		if (g_hex_send_checked)
 		{
 			string s2s = string(g_text2send);
-			trimString(s2s);
-			i_ret_s = pS->send_data(s2s.c_str(), errMsg, g_hex_send_checked);
+			s2s = trimString(s2s);
+			i_ret_s = pS->send_data(s2s.c_str(), errMsg_s, g_hex_send_checked);
 		}
 		else
 		{
-			i_ret_s = pS->send_data(g_text2send, errMsg, g_hex_send_checked);
+			i_ret_s = pS->send_data(g_text2send, errMsg_s, g_hex_send_checked);
 		}
 
 		strcat(g_out, ">>");
 		strcat(g_out, g_text2send);
 		strcat(g_out, "\n");
 
-		if (strlen(errMsg)>0)
+		if (strlen(errMsg_s)>0)
 		{
-			strcat(g_out, errMsg);
+			strcat(g_out, errMsg_s);
 			strcat(g_out, "\n");
 		}
 
-		//char szRecieve[1024*100] = "";
-		//i_ret_r = pS->receive_data(,);
+		if (0 == i_ret_s)
+		{
+			gchar errMsg_r[256] = "\0";
+			char szRecieve[1024*100] = "";
+			i_ret_r = pS->receive_data(atol(g_data_buf_len), szRecieve, errMsg_r, g_hex_output_checked);
+
+			if (strlen(errMsg_r) > 0)
+			{
+				strcat(g_out, errMsg_r);
+				strcat(g_out, "\n");
+			}
+			else
+			{
+				if (g_hex_output_checked)
+				{
+					string sTmp = insert_space_split_2(szRecieve);
+					strcat(g_out, "<<");
+					strcat(g_out, sTmp.c_str());
+					strcat(g_out, "\n");
+				}
+				else
+				{
+					strcat(g_out, "<<");
+					strcat(g_out, szRecieve);
+					strcat(g_out, "\n");
+				}
+			}
+		}
 
 		GtkTextIter start,end;
 		gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(data),&start,&end);
@@ -432,17 +465,6 @@ int main(int argc, char *argv[])
 	if (NULL == g_text2send)
 		return -1;
 
-	g_text2output = (gchar*)malloc(MAX_OUTPUT*sizeof(gchar));
-	if (NULL == g_text2output)
-	{
-		if (NULL != g_text2send)
-		{
-			free(g_text2send);
-			g_text2send = NULL;
-		}
-		return -1;
-	}
-
 	pS = new my_serial_ctrl();
 
 	GtkBuilder *builder = NULL;
@@ -452,6 +474,7 @@ int main(int argc, char *argv[])
 	GObject *chk_btn = NULL;
 	GObject *textView = NULL;
 	GObject *textBuffer = NULL;
+	GObject *entry = NULL;
 	GError *error = NULL;
 
 	const gchar *entry_port = "/dev/ttyUSB0";
@@ -494,6 +517,9 @@ int main(int argc, char *argv[])
 	button = gtk_builder_get_object(builder, "btn_send");
 	textBuffer = gtk_builder_get_object(builder, "textbuffer_output");
 	g_signal_connect(button, "clicked", G_CALLBACK(text_view_output_callback), (gpointer)textBuffer);
+
+	entry = gtk_builder_get_object(builder, "entry_read_buf_len");
+	g_signal_connect(entry, "changed", G_CALLBACK(entry_callback), NULL);
 
 	comboBoxText = gtk_builder_get_object(builder, "cbt_port");
 	//entry_port = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText));
@@ -581,12 +607,6 @@ int main(int argc, char *argv[])
 	{
 		free(g_text2send);
 		g_text2send = NULL;
-	}
-
-	if (NULL != g_text2output)
-	{
-		free(g_text2output);
-		g_text2output = NULL;
 	}
 
 	return 0;
