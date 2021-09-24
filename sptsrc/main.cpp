@@ -394,26 +394,36 @@ text_view_output_callback(GtkWidget *widget, gpointer data)
 	if (NULL != pS)
 	{
 		gchar errMsg[256] = "\0";
-		pS->send_data(g_text2send, errMsg, g_hex_send_checked);
+		gchar g_out[1024*100*4] = "\0";
+		int i_ret_s, i_ret_r;
+		if (g_hex_send_checked)
+		{
+			string s2s = string(g_text2send);
+			trimString(s2s);
+			i_ret_s = pS->send_data(s2s.c_str(), errMsg, g_hex_send_checked);
+		}
+		else
+		{
+			i_ret_s = pS->send_data(g_text2send, errMsg, g_hex_send_checked);
+		}
 
-		drop_data_by_len(g_text2output, MAX_OUTPUT, 2);
-		strcat(g_text2output, ">>");
-		drop_data_by_len(g_text2output, MAX_OUTPUT, strlen(g_text2send)+1);
-		strcat(g_text2output, g_text2send);
-		strcat(g_text2output, "\n");
+		strcat(g_out, ">>");
+		strcat(g_out, g_text2send);
+		strcat(g_out, "\n");
 
 		if (strlen(errMsg)>0)
 		{
-			drop_data_by_len(g_text2output, MAX_OUTPUT, strlen(errMsg)+1);
-			strcat(g_text2output, errMsg);
-			strcat(g_text2output, "\n");
+			strcat(g_out, errMsg);
+			strcat(g_out, "\n");
 		}
-	}
-	GtkTextBuffer *text_buffer = gtk_text_buffer_new(NULL);
-	gtk_text_buffer_set_text(GTK_TEXT_BUFFER(text_buffer), g_text2output, strlen(g_text2output));
-	gtk_text_view_set_buffer(GTK_TEXT_VIEW(data), text_buffer);
 
-	g_object_unref(text_buffer);
+		//char szRecieve[1024*100] = "";
+		//i_ret_r = pS->receive_data(,);
+
+		GtkTextIter start,end;
+		gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(data),&start,&end);
+		gtk_text_buffer_insert(GTK_TEXT_BUFFER(data), &end, g_out, strlen(g_out));
+	}
 }
 
 int main(int argc, char *argv[])
@@ -441,9 +451,8 @@ int main(int argc, char *argv[])
 	GObject *button = NULL;
 	GObject *chk_btn = NULL;
 	GObject *textView = NULL;
+	GObject *textBuffer = NULL;
 	GError *error = NULL;
-
-	GtkTextBuffer *buffer = NULL;
 
 	const gchar *entry_port = "/dev/ttyUSB0";
 	const gchar *entry_baud = "57600";
@@ -477,12 +486,14 @@ int main(int argc, char *argv[])
 	g_signal_connect(chk_btn, "released", G_CALLBACK(chk_btn_send_callback), NULL);
 
 	textView = gtk_builder_get_object(builder, "home_tv_send");
-	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
-	g_signal_connect(buffer, "changed", G_CALLBACK(text_view_send_callback), NULL);
+	//buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
+	textBuffer = gtk_builder_get_object(builder, "textbuffer_send");
+	g_signal_connect(textBuffer, "changed", G_CALLBACK(text_view_send_callback), NULL);
 
 	textView = gtk_builder_get_object(builder, "home_tv_output");
 	button = gtk_builder_get_object(builder, "btn_send");
-	g_signal_connect(button, "clicked", G_CALLBACK(text_view_output_callback), (gpointer)textView);
+	textBuffer = gtk_builder_get_object(builder, "textbuffer_output");
+	g_signal_connect(button, "clicked", G_CALLBACK(text_view_output_callback), (gpointer)textBuffer);
 
 	comboBoxText = gtk_builder_get_object(builder, "cbt_port");
 	//entry_port = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBoxText));

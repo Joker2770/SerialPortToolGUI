@@ -412,7 +412,7 @@ int my_serial_ctrl::send_data(const char *szData, char* errMsg, bool b_hex)
 	return 0;
 }
 
-int my_serial_ctrl::receive_data(uint32_t ulength, char* errMsg, bool b_hex)
+int my_serial_ctrl::receive_data(uint32_t ulength, char* szRecv, char* errMsg, bool b_hex)
 {
 	try
 	{
@@ -425,6 +425,9 @@ int my_serial_ctrl::receive_data(uint32_t ulength, char* errMsg, bool b_hex)
 			memset(szdest, 0, sizeof(szdest));
 			HexToAscii(result, szdest, r_size);
 			printf("<<(hex)%s\n", szdest);
+
+			if (szRecv != NULL)
+				memcpy(szRecv, szdest, strlen((char*)szdest));
 		}
 		else
 		{
@@ -435,6 +438,9 @@ int my_serial_ctrl::receive_data(uint32_t ulength, char* errMsg, bool b_hex)
 				printf("%c", result[i]);
 			}
 			printf("\n");
+
+			if (szRecv != NULL)
+				memcpy(szRecv, result, strlen((char*)result));
 		}
 	}
 	catch (exception &e)

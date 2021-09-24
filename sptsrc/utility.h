@@ -30,7 +30,6 @@
 using namespace std;
 
 string trimString(string);
-void drop_data_by_len(char*, unsigned int , unsigned int );
 
 #endif
 
