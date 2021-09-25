@@ -600,13 +600,13 @@ tv_crc16_callback(GtkWidget *widget, gpointer data)
 		uint32_t ilen = 0;
 		int iret = StringToHex((char *)s2s.c_str(), szDest, &ilen);
 
-		unsigned int crcVal = crc16(szDest, ilen);
-
-		sprintf(g_out, "%02x %02x ", (crcVal & 0x00ff), ((crcVal & 0xff00) >> 8));
+		if (iret == 0)
+		{
+			unsigned int crcVal = crc16(szDest, ilen);
+			sprintf(g_out, "%02x %02x ", (crcVal & 0x00ff), ((crcVal & 0xff00) >> 8));
+		}
 	}
 
-	//GtkTextIter start,end;
-	//gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(data),&start,&end);
 	gtk_text_buffer_set_text(GTK_TEXT_BUFFER(data), g_out, strlen(g_out));
 }
 
