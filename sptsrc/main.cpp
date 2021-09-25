@@ -499,6 +499,7 @@ text_view_send_callback(GtkWidget *widget, gpointer data)
 		memset(g_text2send, 0, MAX_SEND*sizeof(gchar));
 		memcpy(g_text2send, (gchar*)text, MAX_SEND*sizeof(gchar));
 	}
+	g_free(text);
 }
 
 static void
@@ -511,13 +512,14 @@ text_view_crc16_in_callback(GtkWidget *widget, gpointer data)
 	const GtkTextIter s = start, e = end;
 	text = gtk_text_buffer_get_text(GTK_TEXT_BUFFER(widget), &s, &e, TRUE);
 
-	g_print("text view(send):%s\n", text);
+	g_print("text view(crc16):%s\n", text);
 
 	if (NULL != g_crc16_in)
 	{
 		memset(g_crc16_in, 0, MAX_SEND*sizeof(gchar));
 		memcpy(g_crc16_in, (gchar*)text, MAX_SEND*sizeof(gchar));
 	}
+	g_free(text);
 }
 
 static void 
