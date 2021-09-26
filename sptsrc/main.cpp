@@ -601,6 +601,15 @@ text_view_output_callback(GtkWidget *widget, gpointer data)
 }
 
 static void 
+scroll_output_callback(GtkWidget *widget, gpointer data)
+{
+	GtkTextIter start,end;
+	gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(widget),&start,&end);
+
+	gtk_text_view_scroll_to_iter((GtkTextView*)data, &end, 0.0, TRUE, 0.99, 0.99);
+}
+
+static void 
 tv_crc16_callback(GtkWidget *widget, gpointer data)
 {
 	gchar g_out[8] = "\0";
@@ -694,19 +703,23 @@ int main(int argc, char *argv[])
 	g_signal_connect(chk_btn, "released", G_CALLBACK(chk_btn_send_callback), NULL);
 
 	//textView = gtk_builder_get_object(builder, "home_tv_send");
+	//gtk_widget_grab_focus((GtkWidget*)textView);
 	//buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
 	textBuffer = gtk_builder_get_object(builder, "textbuffer_send");
 	g_signal_connect(textBuffer, "changed", G_CALLBACK(text_view_send_callback), NULL);
 	button = gtk_builder_get_object(builder, "btn_clear_send");
 	g_signal_connect(button, "clicked", G_CALLBACK(clear_callback), (gpointer)textBuffer);
 
-	//textView = gtk_builder_get_object(builder, "home_tv_output");
+	textView = gtk_builder_get_object(builder, "home_tv_output");
 	textBuffer = gtk_builder_get_object(builder, "textbuffer_output");
+	g_signal_connect(textBuffer, "changed", G_CALLBACK(scroll_output_callback), (gpointer)textView);
 	button = gtk_builder_get_object(builder, "btn_send");
 	g_signal_connect(button, "clicked", G_CALLBACK(text_view_output_callback), (gpointer)textBuffer);
 	button = gtk_builder_get_object(builder, "btn_clear_output");
 	g_signal_connect(button, "clicked", G_CALLBACK(clear_callback), (gpointer)textBuffer);
 
+	//textView = gtk_builder_get_object(builder, "utility_tv_send");
+	//gtk_widget_grab_focus((GtkWidget*)textView);
 	textBuffer = gtk_builder_get_object(builder, "textBuffer_utility_crc16_in");
 	g_signal_connect(textBuffer, "changed", G_CALLBACK(text_view_crc16_in_callback), NULL);
 	button = gtk_builder_get_object(builder, "btn_calculate");
