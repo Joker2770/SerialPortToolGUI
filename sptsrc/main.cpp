@@ -767,6 +767,9 @@ int main(int argc, char *argv[])
 		else if (0 == strcmp(gc, "hardware"))
 			pS->m_serial->setFlowcontrol((serial::flowcontrol_t)serial::flowcontrol_hardware);
 		g_signal_connect(comboBoxText, "changed", G_CALLBACK(cbt_flowcontrol_callback), (gpointer)window);
+
+		g_free(gc);
+		gc = NULL;
 	}
 	catch (exception &e)
 	{
