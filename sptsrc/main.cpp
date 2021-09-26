@@ -500,6 +500,7 @@ text_view_send_callback(GtkWidget *widget, gpointer data)
 		memcpy(g_text2send, (gchar*)text, MAX_SEND*sizeof(gchar));
 	}
 	g_free(text);
+	text = NULL;
 }
 
 static void
@@ -520,6 +521,7 @@ text_view_crc16_in_callback(GtkWidget *widget, gpointer data)
 		memcpy(g_crc16_in, (gchar*)text, MAX_SEND*sizeof(gchar));
 	}
 	g_free(text);
+	text = NULL;
 }
 
 static void 
