@@ -96,6 +96,8 @@ cbt_port_callback(GtkWidget *widget, gpointer data)
 		gchar *gData = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
 		printf("cbt port change: %s\n", gData);
 		pS->m_serial->setPort(gData);
+		g_free(gData);
+		gData = NULL;
 	}
 	catch (exception &e)
 	{
@@ -112,6 +114,8 @@ cbt_baudrate_callback(GtkWidget *widget, gpointer data)
 		gchar *gData = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
 		printf("cbt baudrate change: %s\n", gData);
 		pS->m_serial->setBaudrate(atol(gData));
+		g_free(gData);
+		gData = NULL;
 	}
 	catch (exception &e)
 	{
@@ -128,6 +132,8 @@ cbt_bytesize_callback(GtkWidget *widget, gpointer data)
 		gchar *gData = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
 		printf("cbt bytesize change: %s\n", gData);
 		pS->m_serial->setBytesize((serial::bytesize_t)atoi(gData));
+		g_free(gData);
+		gData = NULL;
 	}
 	catch (exception &e)
 	{
@@ -153,6 +159,8 @@ cbt_parity_callback(GtkWidget *widget, gpointer data)
 			pS->m_serial->setParity((serial::parity_t)serial::parity_mark);
 		else if (0 == strcmp(gData, "space"))
 			pS->m_serial->setParity((serial::parity_t)serial::parity_space);
+		g_free(gData);
+		gData = NULL;
 	}
 	catch (exception &e)
 	{
@@ -172,6 +180,8 @@ cbt_stopbits_callback(GtkWidget *widget, gpointer data)
 			pS->m_serial->setStopbits((serial::stopbits_t)serial::stopbits_one_point_five);
 		else
 			pS->m_serial->setStopbits((serial::stopbits_t)atoi(gData));
+		g_free(gData);
+		gData = NULL;
 	}
 	catch (exception &e)
 	{
@@ -193,6 +203,8 @@ cbt_flowcontrol_callback(GtkWidget *widget, gpointer data)
 			pS->m_serial->setFlowcontrol((serial::flowcontrol_t)serial::flowcontrol_software);
 		else if (0 == strcmp(gData, "hardware"))
 			pS->m_serial->setFlowcontrol((serial::flowcontrol_t)serial::flowcontrol_hardware);
+		g_free(gData);
+		gData = NULL;
 	}
 	catch (exception &e)
 	{
@@ -642,8 +654,8 @@ int main(int argc, char *argv[])
 	GObject *entry = NULL;
 	GError *error = NULL;
 
-	const gchar *entry_port = "/dev/ttyUSB0";
-	const gchar *entry_baud = "57600";
+	//const gchar *entry_port = "/dev/ttyUSB0";
+	//const gchar *entry_baud = "57600";
 
 	gtk_init(&argc, &argv);
 
