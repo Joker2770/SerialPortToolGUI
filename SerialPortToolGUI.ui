@@ -880,7 +880,8 @@
           <object class="GtkLabel" id="lab_about">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label" translatable="yes">    power by GTK+3.0
+            <property name="label" translatable="yes">    power by GTK+3.0 (&gt;=3.22)
+    source &lt; https://github.com/Joker2770/SerialPortToolGUI.git &gt;
     thanks for serial &lt; https://github.com/wjwwood/serial.git &gt;
 
     A Cross-platform serial debug tool.
