@@ -40,6 +40,9 @@ gchar *g_text2send = NULL;
 gchar *g_crc16_in = NULL;
 gboolean g_hex_output_checked = FALSE;
 gboolean g_hex_send_checked = FALSE;
+gboolean g_bRTS = FALSE;
+gboolean g_bDTR = FALSE;
+gboolean g_bBreak = FALSE;
 
 static void
 show_errMsg(const gchar* errMsg, gpointer data)
@@ -267,9 +270,15 @@ dlg_ms_cbt_0_callback(GtkWidget *widget, gpointer data)
 	try
 	{
 		if (strcmp(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget)), "FALSE") == 0)
+		{
 			pS->m_serial->setRTS(false);
+			g_bRTS = FALSE;
+		}
 		else
+		{
 			pS->m_serial->setRTS(true);
+			g_bRTS = TRUE;
+		}
 	}
 	catch (exception &e)
 	{
@@ -284,9 +293,15 @@ dlg_ms_cbt_1_callback(GtkWidget *widget, gpointer data)
 	try
 	{
 		if (strcmp(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget)), "FALSE") == 0)
+		{
 			pS->m_serial->setDTR(false);
+			g_bDTR = FALSE;
+		}
 		else
+		{
 			pS->m_serial->setDTR(true);
+			g_bDTR = TRUE;
+		}
 	}
 	catch (exception &e)
 	{
@@ -301,9 +316,15 @@ dlg_ms_cbt_2_callback(GtkWidget *widget, gpointer data)
 	try
 	{
 		if (strcmp(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget)), "FALSE") == 0)
+		{
 			pS->m_serial->setBreak(false);
+			g_bBreak = FALSE;
+		}
 		else
+		{
 			pS->m_serial->setBreak(true);
+			g_bBreak = TRUE;
+		}
 	}
 	catch (exception &e)
 	{
@@ -329,24 +350,36 @@ btn_more_setting_callback(GtkWidget *widget, gpointer data)
 
 	label = gtk_label_new ("RTS");
 	comboBoxText = gtk_combo_box_text_new();
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBoxText), "FALSE");
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBoxText), "TRUE");
+	gtk_combo_box_text_prepend(GTK_COMBO_BOX_TEXT(comboBoxText), "0", "FALSE");
+	gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(comboBoxText), "1", "TRUE");
+	if (!g_bRTS)
+		gtk_combo_box_set_active_id(GTK_COMBO_BOX(GTK_COMBO_BOX_TEXT(comboBoxText)), "0");
+	else
+		gtk_combo_box_set_active_id(GTK_COMBO_BOX(GTK_COMBO_BOX_TEXT(comboBoxText)), "1");
 	gtk_grid_attach(GTK_GRID(grid), label, 0, 0, 1, 1);
 	gtk_grid_attach(GTK_GRID(grid), comboBoxText, 1, 0, 1, 1);
 	g_signal_connect(comboBoxText, "changed", G_CALLBACK (dlg_ms_cbt_0_callback), data);
 
 	label = gtk_label_new ("DTR");
 	comboBoxText = gtk_combo_box_text_new();
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBoxText), "FALSE");
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBoxText), "TRUE");
+	gtk_combo_box_text_prepend(GTK_COMBO_BOX_TEXT(comboBoxText), "0", "FALSE");
+	gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(comboBoxText), "1", "TRUE");
+	if (!g_bDTR)
+		gtk_combo_box_set_active_id(GTK_COMBO_BOX(GTK_COMBO_BOX_TEXT(comboBoxText)), "0");
+	else
+		gtk_combo_box_set_active_id(GTK_COMBO_BOX(GTK_COMBO_BOX_TEXT(comboBoxText)), "1");
 	gtk_grid_attach(GTK_GRID(grid), label, 0, 1, 1, 1);
 	gtk_grid_attach(GTK_GRID(grid), comboBoxText, 1, 1, 1, 1);
 	g_signal_connect(comboBoxText, "changed", G_CALLBACK (dlg_ms_cbt_1_callback), data);
 
 	label = gtk_label_new ("break");
 	comboBoxText = gtk_combo_box_text_new();
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBoxText), "FALSE");
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBoxText), "TRUE");
+	gtk_combo_box_text_prepend(GTK_COMBO_BOX_TEXT(comboBoxText), "0", "FALSE");
+	gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(comboBoxText), "1", "TRUE");
+	if (!g_bBreak)
+		gtk_combo_box_set_active_id(GTK_COMBO_BOX(GTK_COMBO_BOX_TEXT(comboBoxText)), "0");
+	else
+		gtk_combo_box_set_active_id(GTK_COMBO_BOX(GTK_COMBO_BOX_TEXT(comboBoxText)), "1");
 	gtk_grid_attach(GTK_GRID(grid), label, 0, 2, 1, 1);
 	gtk_grid_attach(GTK_GRID(grid), comboBoxText, 1, 2, 1, 1);
 	g_signal_connect(comboBoxText, "changed", G_CALLBACK (dlg_ms_cbt_2_callback), data);
