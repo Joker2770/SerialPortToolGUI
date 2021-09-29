@@ -506,10 +506,10 @@ text_view_send_callback(GtkWidget *widget, gpointer data)
 
 	g_print("text view(send):%s\n", text);
 
-	if (NULL != g_text2send)
+	if (NULL != g_text2send && strlen(text) < MAX_SEND)
 	{
 		memset(g_text2send, 0, MAX_SEND*sizeof(gchar));
-		memcpy(g_text2send, (gchar*)text, MAX_SEND*sizeof(gchar));
+		memcpy(g_text2send, (gchar*)text, strlen(text)*sizeof(gchar));
 	}
 	g_free(text);
 	text = NULL;
@@ -527,10 +527,10 @@ text_view_crc16_in_callback(GtkWidget *widget, gpointer data)
 
 	g_print("text view(crc16):%s\n", text);
 
-	if (NULL != g_crc16_in)
+	if (NULL != g_crc16_in && strlen(text) < MAX_SEND)
 	{
 		memset(g_crc16_in, 0, MAX_SEND*sizeof(gchar));
-		memcpy(g_crc16_in, (gchar*)text, MAX_SEND*sizeof(gchar));
+		memcpy(g_crc16_in, (gchar*)text, strlen(text)*sizeof(gchar));
 	}
 	g_free(text);
 	text = NULL;
@@ -810,18 +810,21 @@ int main(int argc, char *argv[])
 
 	if (NULL != pS)
 	{
+		printf("free pS ... \n");
 		delete pS;
 		pS = NULL;
 	}
 
 	if (NULL != g_crc16_in)
 	{
+		printf("free g_crc16_in ... \n");
 		free(g_crc16_in);
 		g_crc16_in = NULL;
 	}
 
 	if (NULL != g_text2send)
 	{
+		printf("free g_text2send ... \n");
 		free(g_text2send);
 		g_text2send = NULL;
 	}
