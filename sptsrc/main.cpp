@@ -217,7 +217,7 @@ static void
 entry_callback(GtkWidget *widget, gpointer data)
 {
 	memset(g_data_buf_len, 0, sizeof(g_data_buf_len));
-	strncpy(g_data_buf_len, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 5);
+	strcpy(g_data_buf_len, gtk_entry_get_text(GTK_ENTRY(widget)));
 	g_print("entry buf len change: %s\n", (char*)g_data_buf_len);
 }
 
@@ -225,7 +225,7 @@ static void
 dlg_to_entry_0_callback(GtkWidget *widget, gpointer data)
 {
 	memset(g_Data_0, 0, sizeof(g_Data_0));
-	strncpy(g_Data_0, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
+	strcpy(g_Data_0, gtk_entry_get_text(GTK_ENTRY(widget)));
 	g_print("entry_0 change: %s\n", (char*)g_Data_0);
 }
 
@@ -233,7 +233,7 @@ static void
 dlg_to_entry_1_callback(GtkWidget *widget, gpointer data)
 {
 	memset(g_Data_1, 0, sizeof(g_Data_1));
-	strncpy(g_Data_1, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
+	strcpy(g_Data_1, gtk_entry_get_text(GTK_ENTRY(widget)));
 	g_print("entry_1 change: %s\n", (char*)g_Data_1);
 }
 
@@ -241,7 +241,7 @@ static void
 dlg_to_entry_2_callback(GtkWidget *widget, gpointer data)
 {
 	memset(g_Data_2, 0, sizeof(g_Data_2));
-	strncpy(g_Data_2, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
+	strcpy(g_Data_2, gtk_entry_get_text(GTK_ENTRY(widget)));
 	g_print("entry_2 change: %s\n", (char*)g_Data_2);
 }
 
@@ -249,7 +249,7 @@ static void
 dlg_to_entry_3_callback(GtkWidget *widget, gpointer data)
 {
 	memset(g_Data_3, 0, sizeof(g_Data_3));
-	strncpy(g_Data_3, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
+	strcpy(g_Data_3, gtk_entry_get_text(GTK_ENTRY(widget)));
 	g_print("entry_3 change: %s\n", (char*)g_Data_3);
 }
 
@@ -257,7 +257,7 @@ static void
 dlg_to_entry_4_callback(GtkWidget *widget, gpointer data)
 {
 	memset(g_Data_4, 0, sizeof(g_Data_4));
-	strncpy(g_Data_4, (char*)gtk_entry_get_text(GTK_ENTRY(widget)), 15);
+	strcpy(g_Data_4, gtk_entry_get_text(GTK_ENTRY(widget)));
 	g_print("entry_4 change: %s\n", (char*)g_Data_4);
 }
 
@@ -386,51 +386,66 @@ btn_timeout_setting_callback(GtkWidget *widget, gpointer data)
 	label = gtk_label_new ("inter_byte_timeout");
 	entry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(entry), 8);
-	gtk_entry_set_text(GTK_ENTRY(entry), "65535");
+	if (g_Data_0[0] == '\0')
+	{
+		memset(g_Data_0, 0, sizeof(g_Data_0));
+		strcpy(g_Data_0, "65535");
+	}
+	gtk_entry_set_text(GTK_ENTRY(entry), g_Data_0);
 	gtk_grid_attach(GTK_GRID(grid), label, 0, 0, 1, 1);
 	gtk_grid_attach(GTK_GRID(grid), entry, 1, 0, 1, 1);
-	memset(g_Data_0, 0, sizeof(g_Data_0));
-	strcpy(g_Data_0, "65535");
 	g_signal_connect(entry, "changed", G_CALLBACK (dlg_to_entry_0_callback), NULL);
 
 	label = gtk_label_new ("read_timeout_constant");
 	entry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(entry), 8);
-	gtk_entry_set_text(GTK_ENTRY(entry), "1000");
+	if (g_Data_1[0] == '\0')
+	{
+		memset(g_Data_1, 0, sizeof(g_Data_1));
+		strcpy(g_Data_1, "1000");
+	}
+	gtk_entry_set_text(GTK_ENTRY(entry), g_Data_1);
 	gtk_grid_attach(GTK_GRID(grid), label, 0, 1, 1, 1);
 	gtk_grid_attach(GTK_GRID(grid), entry, 1, 1, 1, 1);
-	memset(g_Data_1, 0, sizeof(g_Data_1));
-	strcpy(g_Data_1, "1000");
 	g_signal_connect(entry, "changed", G_CALLBACK (dlg_to_entry_1_callback), NULL);
 
 	label = gtk_label_new ("read_timeout_multiplier");
 	entry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(entry), 8);
-	gtk_entry_set_text(GTK_ENTRY(entry), "0");
+	if (g_Data_2[0] == '\0')
+	{
+		memset(g_Data_2, 0, sizeof(g_Data_2));
+		strcpy(g_Data_2, "0");
+	}
+	gtk_entry_set_text(GTK_ENTRY(entry), g_Data_2);
 	gtk_grid_attach(GTK_GRID(grid), label, 0, 2, 1, 1);
 	gtk_grid_attach(GTK_GRID(grid), entry, 1, 2, 1, 1);
-	memset(g_Data_2, 0, sizeof(g_Data_2));
-	strcpy(g_Data_2, "0");
 	g_signal_connect(entry, "changed", G_CALLBACK (dlg_to_entry_2_callback), NULL);
 
 	label = gtk_label_new ("write_timeout_constant");
 	entry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(entry), 8);
-	gtk_entry_set_text(GTK_ENTRY(entry), "1000");
+	if (g_Data_3[0] == '\0')
+	{
+		memset(g_Data_3, 0, sizeof(g_Data_3));
+		strcpy(g_Data_3, "1000");
+	}
+	gtk_entry_set_text(GTK_ENTRY(entry), g_Data_3);
 	gtk_grid_attach(GTK_GRID(grid), label, 0, 3, 1, 1);
 	gtk_grid_attach(GTK_GRID(grid), entry, 1, 3, 1, 1);
-	memset(g_Data_3, 0, sizeof(g_Data_3));
-	strcpy(g_Data_3, "1000");
 	g_signal_connect(entry, "changed", G_CALLBACK (dlg_to_entry_3_callback), NULL);
 
 	label = gtk_label_new ("write_timeout_multiplier");
 	entry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(entry), 8);
-	gtk_entry_set_text(GTK_ENTRY(entry), "0");
+	if (g_Data_4[0] == '\0')
+	{
+		memset(g_Data_4, 0, sizeof(g_Data_4));
+		strcpy(g_Data_4, "0");
+	}
+	gtk_entry_set_text(GTK_ENTRY(entry), g_Data_4);
 	gtk_grid_attach(GTK_GRID(grid), label, 0, 4, 1, 1);
 	gtk_grid_attach(GTK_GRID(grid), entry, 1, 4, 1, 1);
-	memset(g_Data_4, 0, sizeof(g_Data_4));
-	strcpy(g_Data_4, "0");
 	g_signal_connect(entry, "changed", G_CALLBACK (dlg_to_entry_4_callback), NULL);
 
 	// Add the label, and show everything we’ve added
