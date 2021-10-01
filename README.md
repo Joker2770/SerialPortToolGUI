@@ -17,7 +17,6 @@ mkdir build
 cd build
 cmake ..
 make
-./SerialPortToolGUI
 ~~~
 
 ## Build on windows
