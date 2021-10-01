@@ -58,7 +58,7 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">5</property>
                         <child>
-                          <object class="GtkBox">
+                          <object class="GtkBox" id="b_output">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="homogeneous">True</property>
@@ -89,7 +89,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButtonBox">
+                              <object class="GtkButtonBox" id="Bb_output_clear">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="layout-style">end</property>
@@ -121,13 +121,11 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkScrolledWindow">
+                          <object class="GtkScrolledWindow" id="sw_output">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="shadow-type">in</property>
                             <property name="min-content-height">190</property>
-                            <property name="max-content-height">195</property>
-                            <property name="propagate-natural-height">True</property>
                             <child>
                               <object class="GtkTextView" id="home_tv_output">
                                 <property name="visible">True</property>
@@ -147,11 +145,11 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox">
+                          <object class="GtkBox" id="b_read_len">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <child>
-                              <object class="GtkLabel">
+                              <object class="GtkLabel" id="l_read_len">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">read buffer length</property>
@@ -169,7 +167,6 @@
                                 <property name="max-length">5</property>
                                 <property name="width-chars">5</property>
                                 <property name="text" translatable="yes">64</property>
-                                <property name="input-purpose">number</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -197,7 +194,7 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">5</property>
                         <child>
-                          <object class="GtkBox">
+                          <object class="GtkBox" id="b_send">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="homogeneous">True</property>
@@ -228,7 +225,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButtonBox">
+                              <object class="GtkButtonBox" id="Bb_send_clear">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="layout-style">end</property>
@@ -260,11 +257,10 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkScrolledWindow">
+                          <object class="GtkScrolledWindow" id="sw_send">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="shadow-type">in</property>
-                            <property name="propagate-natural-height">True</property>
                             <child>
                               <object class="GtkTextView" id="home_tv_send">
                                 <property name="visible">True</property>
@@ -282,7 +278,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButtonBox">
+                          <object class="GtkButtonBox" id="Bb_btn_send">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="layout-style">end</property>
@@ -341,7 +337,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">5</property>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="b_port">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="homogeneous">True</property>
@@ -376,7 +372,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="b_baudrate">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="homogeneous">True</property>
@@ -442,7 +438,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="b_bytesize">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="homogeneous">True</property>
@@ -484,7 +480,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="b_parity">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="homogeneous">True</property>
@@ -527,7 +523,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="b_stopbits">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="homogeneous">True</property>
@@ -568,7 +564,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="b_flowcontrol">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="homogeneous">True</property>
@@ -635,7 +631,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="b_open_close">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="spacing">5</property>
@@ -708,16 +704,16 @@
             <property name="label-xalign">0</property>
             <property name="shadow-type">in</property>
             <child>
-              <object class="GtkBox">
+              <object class="GtkBox" id="b_count_crc16">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkBox" id="b_crc16">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkLabel">
+                      <object class="GtkLabel" id="l_crc16">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">crc16</property>
@@ -731,12 +727,12 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkScrolledWindow">
+                      <object class="GtkScrolledWindow" id="sw_crc16">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="shadow-type">in</property>
                         <child>
-                          <object class="GtkTextView">
+                          <object class="GtkTextView" id="utility_tv_crc16_out">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="editable">False</property>
@@ -763,11 +759,11 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkBox" id="b_hex_data">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkLabel">
+                      <object class="GtkLabel" id="l_hex_data">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">hex data</property>
@@ -781,7 +777,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkScrolledWindow">
+                      <object class="GtkScrolledWindow" id="sw_hex_data">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="shadow-type">in</property>
@@ -809,7 +805,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButtonBox">
+                  <object class="GtkButtonBox" id="Bb_calculate">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="layout-style">end</property>
