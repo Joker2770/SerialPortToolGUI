@@ -1,5 +1,6 @@
 # SerialPortToolGUI
 A Cross-platform serial debug tool.
+[![serialporttoolgui](https://snapcraft.io/serialporttoolgui/badge.svg)](https://snapcraft.io/serialporttoolgui)
 
 ## Dependencies
 Required:
