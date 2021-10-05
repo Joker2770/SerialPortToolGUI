@@ -2,7 +2,7 @@
 Version=0.0.3_20210929
 Encoding=UTF-8
 Name=serialporttoolgui
-Comment=A simple Linux system resources monitor.
+Comment=A Cross-platform serial debug tool.
 Exec=serialporttoolgui
 Terminal=false
 Type=Application
