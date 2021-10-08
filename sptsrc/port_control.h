@@ -29,7 +29,7 @@
 #include "serial/serial.h"
 
 // OS Specific sleep
-#ifdef _WIN32
+#ifdef _MSC_VER
 #include <windows.h>
 #else
 #include <unistd.h>

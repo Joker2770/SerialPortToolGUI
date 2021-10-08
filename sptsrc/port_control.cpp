@@ -124,7 +124,7 @@ my_serial_ctrl::~my_serial_ctrl()
 }
 
 // void my_sleep(unsigned long milliseconds) {
-// #ifdef _WIN32
+// #ifdef _MSC_VER
 // 	Sleep(milliseconds); // 100 ms
 // #else
 // 	usleep(milliseconds * 1000); // 100 ms
@@ -133,7 +133,7 @@ my_serial_ctrl::~my_serial_ctrl()
 
 int my_stricmp(const char *str1, const char *str2)
 {
-#ifdef _WIN32
+#ifdef _MSC_VER
 	return _stricmp(str1, str2); // 100 ms
 #else
 	return strcasecmp(str1, str2); // 100 ms
