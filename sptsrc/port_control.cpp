@@ -194,6 +194,11 @@ int my_serial_ctrl::open_port(char* errMsg)
 			return -1;
 		}
 	}
+	else
+	{
+		if (NULL != errMsg)
+			strcpy(errMsg, "SerialException Serial port already open!\n");
+	}
 	printf("[%s] open succeed!\n", szPort);
 	return 0;
 }
