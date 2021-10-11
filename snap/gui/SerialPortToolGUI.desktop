@@ -6,5 +6,5 @@ Comment=A Cross-platform serial debug tool.
 Exec=serialporttoolgui
 Terminal=false
 Type=Application
-Categories=Graphics;Development;
+Categories=Utility
 Icon=${SNAP}/meta/gui/SerialPortToolGUI.png
