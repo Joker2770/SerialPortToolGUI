@@ -31,7 +31,8 @@ using namespace std;
 
 string trimString(string);
 string insert_space_split_2(const char*);
-unsigned int crc16(unsigned char const* PucY, unsigned char UcX);
+unsigned int crc16(unsigned char const* PucY, unsigned int UcX);
+unsigned int crc32(unsigned char *buf, unsigned int len);
 
 #endif
 

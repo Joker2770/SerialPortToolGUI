@@ -37,9 +37,11 @@ gchar g_Data_2[16] = "\0";
 gchar g_Data_3[16] = "\0";
 gchar g_Data_4[16] = "\0";
 gchar *g_text2send = NULL;
-gchar *g_crc16_in = NULL;
+gchar *g_crc_in = NULL;
 gboolean g_hex_output_checked = FALSE;
 gboolean g_hex_send_checked = FALSE;
+gboolean g_crc16_checked = TRUE;
+gboolean g_crc32_checked = FALSE;
 gboolean g_bRTS = FALSE;
 gboolean g_bDTR = FALSE;
 gboolean g_bBreak = FALSE;
@@ -543,6 +545,36 @@ chk_btn_send_callback(GtkWidget *widget, gpointer data)
 }
 
 static void
+rd_crc16_toggled_callback(GtkWidget *widget, gpointer data)
+{
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
+	{
+		g_crc16_checked = TRUE;
+		g_print("crc16 checked\n");
+	}
+	else
+	{
+		g_crc16_checked = FALSE;
+		g_print("crc16 released\n");
+	}
+}
+
+static void
+rd_crc32_toggled_callback(GtkWidget *widget, gpointer data)
+{
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
+	{
+		g_crc32_checked = TRUE;
+		g_print("crc32 checked\n");
+	}
+	else
+	{
+		g_crc32_checked = FALSE;
+		g_print("crc32 released\n");
+	}
+}
+
+static void
 text_view_send_callback(GtkWidget *widget, gpointer data)
 {
 	gchar* text = NULL;
@@ -564,7 +596,7 @@ text_view_send_callback(GtkWidget *widget, gpointer data)
 }
 
 static void
-text_view_crc16_in_callback(GtkWidget *widget, gpointer data)
+text_view_crc_in_callback(GtkWidget *widget, gpointer data)
 {
 	gchar* text = NULL;
 	GtkTextIter start, end;
@@ -575,10 +607,10 @@ text_view_crc16_in_callback(GtkWidget *widget, gpointer data)
 
 	g_print("text view(crc16):%s\n", text);
 
-	if (NULL != g_crc16_in && strlen(text) < MAX_SEND)
+	if (NULL != g_crc_in && strlen(text) < MAX_SEND)
 	{
-		memset(g_crc16_in, 0, MAX_SEND*sizeof(gchar));
-		memcpy(g_crc16_in, (gchar*)text, strlen(text)*sizeof(gchar));
+		memset(g_crc_in, 0, MAX_SEND*sizeof(gchar));
+		memcpy(g_crc_in, (gchar*)text, strlen(text)*sizeof(gchar));
 	}
 	g_free(text);
 	text = NULL;
@@ -658,14 +690,14 @@ scroll_output_callback(GtkWidget *widget, gpointer data)
 }
 
 static void 
-tv_crc16_callback(GtkWidget *widget, gpointer data)
+tv_crc_callback(GtkWidget *widget, gpointer data)
 {
-	gchar g_out[8] = "\0";
+	gchar g_out[16] = "\0";
 	memset(g_out, 0, sizeof(g_out));
 
-	if (g_crc16_in[0] != '\0')
+	if (g_crc_in[0] != '\0')
 	{
-		string s2s = string(g_crc16_in);
+		string s2s = string(g_crc_in);
 		s2s = trimString(s2s);
 
 		unsigned char szDest[1024 * 100] = "";
@@ -675,8 +707,20 @@ tv_crc16_callback(GtkWidget *widget, gpointer data)
 
 		if (iret == 0)
 		{
-			unsigned int crcVal = crc16(szDest, ilen);
-			sprintf(g_out, "%02x %02x ", (crcVal & 0x00ff), ((crcVal & 0xff00) >> 8));
+			if (g_crc16_checked)
+			{
+				unsigned int crcVal = crc16(szDest, ilen);
+				sprintf(g_out, "%02x %02x ", (crcVal & 0x00ff), ((crcVal & 0xff00) >> 8));
+			}
+			else if (g_crc32_checked)
+			{
+				unsigned int crcVal = crc32(szDest, ilen);
+				sprintf(g_out, "%02x %02x %02x %02x ", ((crcVal & 0xff000000) >> 24), ((crcVal & 0x00ff0000) >> 16), ((crcVal & 0x0000ff00) >> 8), (crcVal & 0x000000ff));
+			}
+			else
+			{
+				strcat(g_out, "internal error!");
+			}
 		}
 	}
 
@@ -697,7 +741,7 @@ int main(int argc, char *argv[])
 	if (NULL == g_text2send)
 		return -1;
 	
-	g_crc16_in = (gchar*)malloc(MAX_SEND*sizeof(gchar));
+	g_crc_in = (gchar*)malloc(MAX_SEND*sizeof(gchar));
 
 	pS = new my_serial_ctrl();
 
@@ -706,6 +750,7 @@ int main(int argc, char *argv[])
 	GObject *comboBoxText = NULL;
 	GObject *button = NULL;
 	GObject *chk_btn = NULL;
+	GObject *rd_btn = NULL;
 	GObject *textView = NULL;
 	GObject *textBuffer = NULL;
 	GObject *entry = NULL;
@@ -750,6 +795,12 @@ int main(int argc, char *argv[])
 	chk_btn = gtk_builder_get_object(builder, "chkbtn_hex_send");
 	g_signal_connect(chk_btn, "released", G_CALLBACK(chk_btn_send_callback), NULL);
 
+	rd_btn = gtk_builder_get_object(builder, "rb_crc16");
+	g_signal_connect(rd_btn, "toggled", G_CALLBACK(rd_crc16_toggled_callback), NULL);
+
+	rd_btn = gtk_builder_get_object(builder, "rb_crc32");
+	g_signal_connect(rd_btn, "toggled", G_CALLBACK(rd_crc32_toggled_callback), NULL);
+
 	//textView = gtk_builder_get_object(builder, "home_tv_send");
 	//gtk_widget_grab_focus((GtkWidget*)textView);
 	//buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
@@ -768,11 +819,11 @@ int main(int argc, char *argv[])
 
 	//textView = gtk_builder_get_object(builder, "utility_tv_send");
 	//gtk_widget_grab_focus((GtkWidget*)textView);
-	textBuffer = gtk_builder_get_object(builder, "textBuffer_utility_crc16_in");
-	g_signal_connect(textBuffer, "changed", G_CALLBACK(text_view_crc16_in_callback), NULL);
+	textBuffer = gtk_builder_get_object(builder, "textBuffer_utility_crc_in");
+	g_signal_connect(textBuffer, "changed", G_CALLBACK(text_view_crc_in_callback), NULL);
 	button = gtk_builder_get_object(builder, "btn_calculate");
-	textBuffer = gtk_builder_get_object(builder, "textBuffer_utility_crc16_out");
-	g_signal_connect(button, "clicked", G_CALLBACK(tv_crc16_callback), (gpointer)textBuffer);
+	textBuffer = gtk_builder_get_object(builder, "textBuffer_utility_crc_out");
+	g_signal_connect(button, "clicked", G_CALLBACK(tv_crc_callback), (gpointer)textBuffer);
 
 	entry = gtk_builder_get_object(builder, "entry_read_buf_len");
 	g_signal_connect(entry, "changed", G_CALLBACK(entry_callback), NULL);
@@ -863,11 +914,11 @@ int main(int argc, char *argv[])
 		pS = NULL;
 	}
 
-	if (NULL != g_crc16_in)
+	if (NULL != g_crc_in)
 	{
-		printf("free g_crc16_in ... \n");
-		free(g_crc16_in);
-		g_crc16_in = NULL;
+		printf("free g_crc_in ... \n");
+		free(g_crc_in);
+		g_crc_in = NULL;
 	}
 
 	if (NULL != g_text2send)
