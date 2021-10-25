@@ -29,6 +29,31 @@
 
 #define MAX_SEND (1024*100)
 
+typedef enum
+{
+	crc4_itu = 0,
+	crc5_epc = 1,
+	crc5_usb = 2,
+	crc5_itu = 3,
+	crc6_itu = 4,
+	crc7_mmc = 5,
+	crc8 = 6,
+	crc8_itu = 7,
+	crc8_rohc = 8,
+	crc8_maxim = 9,
+	crc16_ccitt = 10,
+	crc16_ccitt_false = 11,
+	crc16_xmodem = 12,
+	crc16_x25 = 13,
+	crc16_modbus = 14,
+	crc16_ibm = 15,
+	crc16_maxim = 16,
+	crc16_usb = 17,
+	crc16_dnp = 18,
+	crc32 = 19,
+	crc32_mpeg = 20
+} crc_alg_t;
+
 my_serial_ctrl *pS = nullptr;
 gchar g_data_buf_len[8] = "64";
 gchar g_Data_0[16] = "\0";
@@ -40,11 +65,10 @@ gchar *g_text2send = NULL;
 gchar *g_crc_in = NULL;
 gboolean g_hex_output_checked = FALSE;
 gboolean g_hex_send_checked = FALSE;
-gboolean g_crc16_checked = TRUE;
-gboolean g_crc32_checked = FALSE;
 gboolean g_bRTS = FALSE;
 gboolean g_bDTR = FALSE;
 gboolean g_bBreak = FALSE;
+unsigned int g_crc_flag = 6;
 
 static void
 show_errMsg(const gchar* errMsg, gpointer data)
@@ -215,6 +239,62 @@ cbt_flowcontrol_callback(GtkWidget *widget, gpointer data)
 	{
 		printf("Unhandled Exception: %s\n", e.what());
 		show_errMsg(e.what(), data);
+	}
+}
+
+static void
+cbt_crc_select_callback(GtkWidget *widget, gpointer data)
+{
+	gchar *gData = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widget));
+	printf("crc alg change: %s\n", gData);
+
+	if (0 == strcmp(gData, "CRC4_ITU"))
+		g_crc_flag = crc_alg_t::crc4_itu;
+	else if (0 == strcmp(gData, "CRC5_EPC"))
+		g_crc_flag = crc_alg_t::crc5_epc;
+	else if (0 == strcmp(gData, "CRC5_USB"))
+		g_crc_flag = crc_alg_t::crc5_usb;
+	else if (0 == strcmp(gData, "CRC5_ITU"))
+		g_crc_flag = crc_alg_t::crc5_itu;
+	else if (0 == strcmp(gData, "CRC6_ITU"))
+		g_crc_flag = crc_alg_t::crc6_itu;
+	else if (0 == strcmp(gData, "CRC7_MMC"))
+		g_crc_flag = crc_alg_t::crc7_mmc;
+	else if (0 == strcmp(gData, "CRC8"))
+		g_crc_flag = crc_alg_t::crc8;
+	else if (0 == strcmp(gData, "CRC8_ITU"))
+		g_crc_flag = crc_alg_t::crc8_itu;
+	else if (0 == strcmp(gData, "CRC8_ROHC"))
+		g_crc_flag = crc_alg_t::crc8_rohc;
+	else if (0 == strcmp(gData, "CRC8_MAXIM"))
+		g_crc_flag = crc_alg_t::crc8_maxim;
+	else if (0 == strcmp(gData, "CRC16_CCITT"))
+		g_crc_flag = crc_alg_t::crc16_ccitt;
+	else if (0 == strcmp(gData, "CRC16_CCITT_FALSE"))
+		g_crc_flag = crc_alg_t::crc16_ccitt_false;
+	else if (0 == strcmp(gData, "CRC16_XMODEM"))
+		g_crc_flag = crc_alg_t::crc16_xmodem;
+	else if (0 == strcmp(gData, "CRC16_X25"))
+		g_crc_flag = crc_alg_t::crc16_x25;
+	else if (0 == strcmp(gData, "CRC16_MODBUS"))
+		g_crc_flag = crc_alg_t::crc16_modbus;
+	else if (0 == strcmp(gData, "CRC16_IBM"))
+		g_crc_flag = crc_alg_t::crc16_ibm;
+	else if (0 == strcmp(gData, "CRC16_MAXIM"))
+		g_crc_flag = crc_alg_t::crc16_maxim;
+	else if (0 == strcmp(gData, "CRC16_USB"))
+		g_crc_flag = crc_alg_t::crc16_usb;
+	else if (0 == strcmp(gData, "CRC16_DNP"))
+		g_crc_flag = crc_alg_t::crc16_dnp;
+	else if (0 == strcmp(gData, "CRC32"))
+		g_crc_flag = crc_alg_t::crc32;
+	else if (0 == strcmp(gData, "CRC32_MPEG"))
+		g_crc_flag = crc_alg_t::crc32_mpeg;
+
+	if (gData != NULL)
+	{
+		g_free(gData);
+		gData = NULL;
 	}
 }
 
@@ -545,36 +625,6 @@ chk_btn_send_callback(GtkWidget *widget, gpointer data)
 }
 
 static void
-rd_crc16_toggled_callback(GtkWidget *widget, gpointer data)
-{
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
-	{
-		g_crc16_checked = TRUE;
-		g_print("crc16 checked\n");
-	}
-	else
-	{
-		g_crc16_checked = FALSE;
-		g_print("crc16 released\n");
-	}
-}
-
-static void
-rd_crc32_toggled_callback(GtkWidget *widget, gpointer data)
-{
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
-	{
-		g_crc32_checked = TRUE;
-		g_print("crc32 checked\n");
-	}
-	else
-	{
-		g_crc32_checked = FALSE;
-		g_print("crc32 released\n");
-	}
-}
-
-static void
 text_view_send_callback(GtkWidget *widget, gpointer data)
 {
 	gchar* text = NULL;
@@ -707,19 +757,98 @@ tv_crc_callback(GtkWidget *widget, gpointer data)
 
 		if (iret == 0)
 		{
-			if (g_crc16_checked)
+			unsigned char crc_8 = 0;
+			unsigned short crc_16 = 0;
+			unsigned int crc_32 = 0;
+
+			switch (g_crc_flag)
 			{
-				unsigned int crcVal = crc16(szDest, ilen);
-				sprintf(g_out, "%02x %02x ", (crcVal & 0x00ff), ((crcVal & 0xff00) >> 8));
-			}
-			else if (g_crc32_checked)
-			{
-				unsigned int crcVal = crc32(szDest, ilen);
-				sprintf(g_out, "%02x %02x %02x %02x ", ((crcVal & 0xff000000) >> 24), ((crcVal & 0x00ff0000) >> 16), ((crcVal & 0x0000ff00) >> 8), (crcVal & 0x000000ff));
-			}
-			else
-			{
-				strcat(g_out, "internal error!");
+			case crc_alg_t::crc4_itu:
+				crc_8 = CRC4_ITU(szDest, ilen);
+				sprintf(g_out, "%02x ", (crc_8 & 0xff));
+				break;
+			case crc_alg_t::crc5_epc:
+				crc_8 = CRC5_EPC(szDest, ilen);
+				sprintf(g_out, "%02x ", (crc_8 & 0xff));
+				break;
+			case crc_alg_t::crc5_usb:
+				crc_8 = CRC5_USB(szDest, ilen);
+				sprintf(g_out, "%02x ", (crc_8 & 0xff));
+				break;
+			case crc_alg_t::crc5_itu:
+				crc_8 = CRC5_ITU(szDest, ilen);
+				sprintf(g_out, "%02x ", (crc_8 & 0xff));
+				break;
+			case crc_alg_t::crc6_itu:
+				crc_8 = CRC6_ITU(szDest, ilen);
+				sprintf(g_out, "%02x ", (crc_8 & 0xff));
+				break;
+			case crc_alg_t::crc7_mmc:
+				crc_8 = CRC7_MMC(szDest, ilen);
+				sprintf(g_out, "%02x ", (crc_8 & 0xff));
+				break;
+			case crc_alg_t::crc8:
+				crc_8 = CRC8(szDest, ilen);
+				sprintf(g_out, "%02x ", (crc_8 & 0xff));
+				break;
+			case crc_alg_t::crc8_itu:
+				crc_8 = CRC8_ITU(szDest, ilen);
+				sprintf(g_out, "%02x ", (crc_8 & 0xff));
+				break;
+			case crc_alg_t::crc8_rohc:
+				crc_8 = CRC8_ROHC(szDest, ilen);
+				sprintf(g_out, "%02x ", (crc_8 & 0xff));
+				break;
+			case crc_alg_t::crc8_maxim:
+				crc_8 = CRC8_MAXIM(szDest, ilen);
+				sprintf(g_out, "%02x ", (crc_8 & 0xff));
+				break;
+			case crc_alg_t::crc16_ccitt:
+				crc_16 = CRC16_CCITT(szDest, ilen);
+				sprintf(g_out, "%02x %02x ", (crc_16 & 0xffff) >> 8, (crc_16 & 0x00ff));
+				break;
+			case crc_alg_t::crc16_ccitt_false:
+				crc_16 = CRC16_CCITT_FALSE(szDest, ilen);
+				sprintf(g_out, "%02x %02x ", (crc_16 & 0xffff) >> 8, (crc_16 & 0x00ff));
+				break;
+			case crc_alg_t::crc16_xmodem:
+				crc_16 = CRC16_XMODEM(szDest, ilen);
+				sprintf(g_out, "%02x %02x ", (crc_16 & 0xffff) >> 8, (crc_16 & 0x00ff));
+				break;
+			case crc_alg_t::crc16_x25:
+				crc_16 = CRC16_X25(szDest, ilen);
+				sprintf(g_out, "%02x %02x ", (crc_16 & 0xffff) >> 8, (crc_16 & 0x00ff));
+				break;
+			case crc_alg_t::crc16_modbus:
+				crc_16 = CRC16_MODBUS(szDest, ilen);
+				sprintf(g_out, "%02x %02x ", (crc_16 & 0xffff) >> 8, (crc_16 & 0x00ff));
+				break;
+			case crc_alg_t::crc16_ibm:
+				crc_16 = CRC16_IBM(szDest, ilen);
+				sprintf(g_out, "%02x %02x ", (crc_16 & 0xffff) >> 8, (crc_16 & 0x00ff));
+				break;
+			case crc_alg_t::crc16_maxim:
+				crc_16 = CRC16_MAXIM(szDest, ilen);
+				sprintf(g_out, "%02x %02x ", (crc_16 & 0xffff) >> 8, (crc_16 & 0x00ff));
+				break;
+			case crc_alg_t::crc16_usb:
+				crc_16 = CRC16_USB(szDest, ilen);
+				sprintf(g_out, "%02x %02x ", (crc_16 & 0xffff) >> 8, (crc_16 & 0x00ff));
+				break;
+			case crc_alg_t::crc16_dnp:
+				crc_16 = CRC16_DNP(szDest, ilen);
+				sprintf(g_out, "%02x %02x ", (crc_16 & 0xffff) >> 8, (crc_16 & 0x00ff));
+				break;
+			case crc_alg_t::crc32:
+				crc_32 = CRC32(szDest, ilen);
+				sprintf(g_out, "%02x %02x %02x %02x ", (crc_32 & 0xff000000) >> 24, (crc_32 & 0x00ff0000) >> 16, (crc_32 & 0x0000ff00) >> 8, (crc_32 & 0x000000ff));
+				break;
+			case crc_alg_t::crc32_mpeg:
+				crc_32 = CRC32_MPEG(szDest, ilen);
+				sprintf(g_out, "%02x %02x %02x %02x ", (crc_32 & 0xff000000) >> 24, (crc_32 & 0x00ff0000) >> 16, (crc_32 & 0x0000ff00) >> 8, (crc_32 & 0x000000ff));
+				break;
+			default:
+				break;
 			}
 		}
 	}
@@ -750,7 +879,6 @@ int main(int argc, char *argv[])
 	GObject *comboBoxText = NULL;
 	GObject *button = NULL;
 	GObject *chk_btn = NULL;
-	GObject *rd_btn = NULL;
 	GObject *textView = NULL;
 	GObject *textBuffer = NULL;
 	GObject *entry = NULL;
@@ -795,12 +923,6 @@ int main(int argc, char *argv[])
 	chk_btn = gtk_builder_get_object(builder, "chkbtn_hex_send");
 	g_signal_connect(chk_btn, "released", G_CALLBACK(chk_btn_send_callback), NULL);
 
-	rd_btn = gtk_builder_get_object(builder, "rb_crc16");
-	g_signal_connect(rd_btn, "toggled", G_CALLBACK(rd_crc16_toggled_callback), NULL);
-
-	rd_btn = gtk_builder_get_object(builder, "rb_crc32");
-	g_signal_connect(rd_btn, "toggled", G_CALLBACK(rd_crc32_toggled_callback), NULL);
-
 	//textView = gtk_builder_get_object(builder, "home_tv_send");
 	//gtk_widget_grab_focus((GtkWidget*)textView);
 	//buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textView));
@@ -824,6 +946,9 @@ int main(int argc, char *argv[])
 	button = gtk_builder_get_object(builder, "btn_calculate");
 	textBuffer = gtk_builder_get_object(builder, "textBuffer_utility_crc_out");
 	g_signal_connect(button, "clicked", G_CALLBACK(tv_crc_callback), (gpointer)textBuffer);
+
+	comboBoxText = gtk_builder_get_object(builder, "cbt_crc_select");
+	g_signal_connect(comboBoxText, "changed", G_CALLBACK(cbt_crc_select_callback), NULL);
 
 	entry = gtk_builder_get_object(builder, "entry_read_buf_len");
 	g_signal_connect(entry, "changed", G_CALLBACK(entry_callback), NULL);

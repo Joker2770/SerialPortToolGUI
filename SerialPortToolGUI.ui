@@ -708,10 +708,12 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="orientation">vertical</property>
+                <property name="spacing">3</property>
                 <child>
                   <object class="GtkBox" id="b_crc">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="spacing">3</property>
                     <child>
                       <object class="GtkLabel" id="l_crc">
                         <property name="visible">True</property>
@@ -752,39 +754,42 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButtonBox" id="Bb_crc_16_32">
+                      <object class="GtkBox" id="b_crc_cb">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="layout-style">start</property>
                         <child>
-                          <object class="GtkRadioButton" id="rb_crc16">
-                            <property name="label" translatable="yes">crc16</property>
+                          <object class="GtkComboBoxText" id="cbt_crc_select">
                             <property name="visible">True</property>
-                            <property name="can-focus">True</property>
-                            <property name="receives-default">False</property>
-                            <property name="active">True</property>
-                            <property name="draw-indicator">True</property>
-                            <property name="group">rb_crc32</property>
+                            <property name="can-focus">False</property>
+                            <property name="active-id">6</property>
+                            <items>
+                              <item id="0" translatable="yes">CRC4_ITU</item>
+                              <item id="1" translatable="yes">CRC5_EPC</item>
+                              <item id="2" translatable="yes">CRC5_USB</item>
+                              <item id="3" translatable="yes">CRC5_ITU</item>
+                              <item id="4" translatable="yes">CRC6_ITU</item>
+                              <item id="5" translatable="yes">CRC7_MMC</item>
+                              <item id="6" translatable="yes">CRC8</item>
+                              <item id="7" translatable="yes">CRC8_ITU</item>
+                              <item id="8" translatable="yes">CRC8_ROHC</item>
+                              <item id="9" translatable="yes">CRC8_MAXIM</item>
+                              <item id="10" translatable="yes">CRC16_CCITT</item>
+                              <item id="11" translatable="yes">CRC16_CCITT_FALSE</item>
+                              <item id="12" translatable="yes">CRC16_XMODEM</item>
+                              <item id="13" translatable="yes">CRC16_X25</item>
+                              <item id="14" translatable="yes">CRC16_MODBUS</item>
+                              <item id="15" translatable="yes">CRC16_IBM</item>
+                              <item id="16" translatable="yes">CRC16_MAXIM</item>
+                              <item id="17" translatable="yes">CRC16_USB</item>
+                              <item id="18" translatable="yes">CRC16_DNP</item>
+                              <item id="19" translatable="yes">CRC32</item>
+                              <item id="20" translatable="yes">CRC32_MPEG</item>
+                            </items>
                           </object>
                           <packing>
-                            <property name="expand">True</property>
+                            <property name="expand">False</property>
                             <property name="fill">True</property>
                             <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkRadioButton" id="rb_crc32">
-                            <property name="label" translatable="yes">crc32</property>
-                            <property name="visible">True</property>
-                            <property name="can-focus">True</property>
-                            <property name="receives-default">False</property>
-                            <property name="draw-indicator">True</property>
-                            <property name="group">rb_crc16</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
                           </packing>
                         </child>
                       </object>
@@ -805,6 +810,7 @@
                   <object class="GtkBox" id="b_hex_data">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="spacing">3</property>
                     <child>
                       <object class="GtkLabel" id="l_hex_data">
                         <property name="visible">True</property>

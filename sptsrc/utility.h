@@ -31,8 +31,27 @@ using namespace std;
 
 string trimString(string);
 string insert_space_split_2(const char*);
-unsigned int crc16(unsigned char const* PucY, unsigned int UcX);
-unsigned int crc32(unsigned char *buf, unsigned int len);
+unsigned char CRC4_ITU(unsigned char *data, unsigned int datalen);
+unsigned char CRC5_EPC(unsigned char *data, unsigned int datalen);
+unsigned char CRC5_USB(unsigned char *data, unsigned int datalen);
+unsigned char CRC5_ITU(unsigned char *data, unsigned int datalen);
+unsigned char CRC6_ITU(unsigned char *data, unsigned int datalen);
+unsigned char CRC7_MMC(unsigned char *data, unsigned int datalen);
+unsigned char CRC8(unsigned char *data, unsigned int datalen);
+unsigned char CRC8_ITU(unsigned char *data, unsigned int datalen);
+unsigned char CRC8_ROHC(unsigned char *data, unsigned int datalen);
+unsigned char CRC8_MAXIM(unsigned char *data, unsigned int datalen);
+unsigned short CRC16_CCITT(unsigned char *data, unsigned int datalen);
+unsigned short CRC16_CCITT_FALSE(unsigned char *data, unsigned int datalen);
+unsigned short CRC16_XMODEM(unsigned char *data, unsigned int datalen);
+unsigned short CRC16_X25(unsigned char *data, unsigned int datalen);
+unsigned short CRC16_MODBUS(unsigned char *data, unsigned int datalen);
+unsigned short CRC16_IBM(unsigned char *data, unsigned int datalen);
+unsigned short CRC16_MAXIM(unsigned char *data, unsigned int datalen);
+unsigned short CRC16_USB(unsigned char *data, unsigned int datalen);
+unsigned short CRC16_DNP(unsigned char *data, unsigned int datalen);
+unsigned int CRC32(unsigned char *data, unsigned int datalen);
+unsigned int CRC32_MPEG(unsigned char *data, unsigned int datalen);
 
 #endif
 
