@@ -40,6 +40,8 @@ apps:
 layout:
   /usr/local/bin/SerialPortToolGUI.ui:
     bind-file: $SNAP/usr/local/bin/SerialPortToolGUI.ui
+  /etc/fonts:
+    bind: $SNAP/etc/fonts
 
 parts:
   serialporttoolgui:
