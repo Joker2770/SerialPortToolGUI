@@ -36,6 +36,8 @@ apps:
       - unity7
       - x11
       - serial-port
+      - hardware-observe
+      - raw-usb
       
 layout:
   /usr/local/bin/SerialPortToolGUI.ui:
