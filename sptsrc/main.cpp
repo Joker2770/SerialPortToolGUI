@@ -695,34 +695,34 @@ text_view_output_callback(GtkWidget *widget, gpointer data)
 			strcat(g_out, "\n");
 		}
 
-		if (0 == i_ret_s)
-		{
-			gchar errMsg_r[256] = "\0";
-			char szRecieve[1024*100] = "";
-			i_ret_r = pS->receive_data(atol(g_data_buf_len), szRecieve, errMsg_r, g_hex_output_checked);
+		// if (0 == i_ret_s)
+		// {
+		// 	gchar errMsg_r[256] = "\0";
+		// 	char szRecieve[1024*100] = "";
+		// 	i_ret_r = pS->receive_data(atol(g_data_buf_len), szRecieve, errMsg_r, g_hex_output_checked);
 
-			if (strlen(errMsg_r) > 0)
-			{
-				strcat(g_out, errMsg_r);
-				strcat(g_out, "\n");
-			}
-			else
-			{
-				if (g_hex_output_checked)
-				{
-					string sTmp = insert_space_split_2(szRecieve);
-					strcat(g_out, "<<");
-					strcat(g_out, sTmp.c_str());
-					strcat(g_out, "\n");
-				}
-				else
-				{
-					strcat(g_out, "<<");
-					strcat(g_out, szRecieve);
-					strcat(g_out, "\n");
-				}
-			}
-		}
+		// 	if (strlen(errMsg_r) > 0)
+		// 	{
+		// 		strcat(g_out, errMsg_r);
+		// 		strcat(g_out, "\n");
+		// 	}
+		// 	else
+		// 	{
+		// 		if (g_hex_output_checked)
+		// 		{
+		// 			string sTmp = insert_space_split_2(szRecieve);
+		// 			strcat(g_out, "<<");
+		// 			strcat(g_out, sTmp.c_str());
+		// 			strcat(g_out, "\n");
+		// 		}
+		// 		else
+		// 		{
+		// 			strcat(g_out, "<<");
+		// 			strcat(g_out, szRecieve);
+		// 			strcat(g_out, "\n");
+		// 		}
+		// 	}
+		// }
 
 		GtkTextIter start,end;
 		gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(data),&start,&end);
@@ -864,6 +864,49 @@ clear_callback(GtkWidget *widget, gpointer data)
 	gtk_text_buffer_delete(GTK_TEXT_BUFFER(data), &start,&end);
 }
 
+gboolean readDaemon(gpointer data)
+{
+	if (pS->m_serial->isOpen())
+	{
+		gchar errMsg_s[256] = "\0";
+		gchar g_out[1024 * 100 * 4] = "\0";
+		int i_ret_r = 0;
+		gchar errMsg_r[256] = "\0";
+		char szRecieve[1024 * 100] = "";
+		i_ret_r = pS->wait_2_read_line(atol(g_data_buf_len), szRecieve, errMsg_r, g_hex_output_checked);
+		if (i_ret_r != 0)
+			return FALSE;
+
+		if (strlen(errMsg_r) > 0)
+		{
+			strcat(g_out, errMsg_r);
+			strcat(g_out, "\n");
+		}
+		else
+		{
+			if (g_hex_output_checked)
+			{
+				string sTmp = insert_space_split_2(szRecieve);
+				strcat(g_out, "<<");
+				strcat(g_out, sTmp.c_str());
+				strcat(g_out, "\n");
+			}
+			else
+			{
+				strcat(g_out, "<<");
+				strcat(g_out, szRecieve);
+				strcat(g_out, "\n");
+			}
+		}
+
+		GtkTextIter start, end;
+		gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(data), &start, &end);
+		gtk_text_buffer_insert(GTK_TEXT_BUFFER(data), &end, g_out, strlen(g_out));
+	}
+
+	return TRUE;
+}
+
 int main(int argc, char *argv[])
 {
 	g_text2send = (gchar*)malloc(MAX_SEND*sizeof(gchar));
@@ -938,6 +981,8 @@ int main(int argc, char *argv[])
 	g_signal_connect(button, "clicked", G_CALLBACK(text_view_output_callback), (gpointer)textBuffer);
 	button = gtk_builder_get_object(builder, "btn_clear_output");
 	g_signal_connect(button, "clicked", G_CALLBACK(clear_callback), (gpointer)textBuffer);
+
+	gdk_threads_add_timeout(atol(g_Data_1) > 0? atol(g_Data_1):1000, readDaemon, (gpointer)textBuffer);
 
 	//textView = gtk_builder_get_object(builder, "utility_tv_send");
 	//gtk_widget_grab_focus((GtkWidget*)textView);
@@ -1025,7 +1070,6 @@ int main(int argc, char *argv[])
 		printf("Unhandled Exception: %s\n", e.what());
 		show_errMsg(e.what(), window);
 	}
-
 
 	g_object_unref(builder);
 

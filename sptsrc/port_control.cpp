@@ -421,38 +421,106 @@ int my_serial_ctrl::receive_data(uint32_t ulength, char* szRecv, char* errMsg, b
 {
 	try
 	{
-		uint8_t result[1024 * 100] = "";
-		memset(result, 0, sizeof(result));
-		size_t r_size = this->m_serial->read(result, ulength);
-		if (b_hex)
+		if (this->m_serial->available())
 		{
-			unsigned char szdest[1024 * 100] = "";
-			memset(szdest, 0, sizeof(szdest));
-			HexToAscii(result, szdest, r_size);
-			printf("<<(hex)%s\n", szdest);
+			uint8_t result[1024 * 100] = "";
+			memset(result, 0, sizeof(result));
+			size_t r_size = this->m_serial->read(result, ulength);
+			if (r_size < 0)
+				throw -1;
 
-			if (szRecv != NULL)
-				memcpy(szRecv, szdest, strlen((char*)szdest));
+			if (b_hex)
+			{
+				unsigned char szdest[1024 * 100] = "";
+				memset(szdest, 0, sizeof(szdest));
+				HexToAscii(result, szdest, r_size);
+				printf("<<(hex)%s\n", szdest);
+
+				if (szRecv != NULL)
+					memcpy(szRecv, szdest, strlen((char *)szdest));
+			}
+			else
+			{
+				// Assume non-printable character inside.
+				printf("<<(visual)");
+				for (size_t i = 0; i < r_size; i++)
+				{
+					printf("%c", result[i]);
+				}
+				printf("\n");
+
+				if (szRecv != NULL)
+					memcpy(szRecv, result, strlen((char *)result));
+			}
 		}
 		else
-		{
-			// Assume non-printable character inside.
-			printf("<<(visual)");
-			for (size_t i = 0; i < r_size; i++)
-			{
-				printf("%c", result[i]);
-			}
-			printf("\n");
-
-			if (szRecv != NULL)
-				memcpy(szRecv, result, strlen((char*)result));
-		}
+			throw -2;
 	}
 	catch (exception &e)
 	{
 		printf("Unhandled Exception: %s\n", e.what());
 		if (NULL != errMsg)
 			strncpy(errMsg, e.what(), 256);
+	}
+	catch (int &erret)
+	{
+		return erret;
+	}
+
+	return 0;
+}
+
+int my_serial_ctrl::wait_2_read_line(uint32_t ulength, char* szRecv, char* errMsg, bool b_hex)
+{
+	try
+	{
+		if (this->m_serial->available())
+		{
+			uint8_t result[1024 * 100] = "";
+			memset(result, 0, sizeof(result));
+			string sTmp;
+			size_t r_size = this->m_serial->readline(sTmp, ulength);
+			if (r_size > 0)
+				memcpy(result, sTmp.c_str(), r_size < (1024 * 100) ? r_size : (1024 * 100));
+			else
+				throw -1;
+
+			if (b_hex)
+			{
+				unsigned char szdest[1024 * 100] = "";
+				memset(szdest, 0, sizeof(szdest));
+				HexToAscii(result, szdest, r_size);
+				printf("<<(hex)%s\n", szdest);
+
+				if (szRecv != NULL)
+					memcpy(szRecv, szdest, strlen((char *)szdest));
+			}
+			else
+			{
+				// Assume non-printable character inside.
+				printf("<<(visual)");
+				for (size_t i = 0; i < r_size; i++)
+				{
+					printf("%c", result[i]);
+				}
+				printf("\n");
+
+				if (szRecv != NULL)
+					memcpy(szRecv, result, strlen((char *)result));
+			}
+		}
+		else
+			throw -2;
+	}
+	catch (exception &e)
+	{
+		printf("Unhandled Exception: %s\n", e.what());
+		if (NULL != errMsg)
+			strncpy(errMsg, e.what(), 256);
+	}
+	catch (int &erret)
+	{
+		return erret;
 	}
 
 	return 0;

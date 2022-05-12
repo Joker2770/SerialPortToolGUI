@@ -57,6 +57,7 @@ public:
 	int port_set(const char *sArg1, const char *sArg2);
 	int send_data(const char *sData, char* errMsg, bool bHex = false);
 	int receive_data(uint32_t i_data_len, char* szRecv, char* errMsg, bool bHex = false);
+	int wait_2_read_line(uint32_t i_data_len, char* szRecv, char* errMsg, bool bHex = false);
 
 //private:
 	serial::Serial *m_serial;
