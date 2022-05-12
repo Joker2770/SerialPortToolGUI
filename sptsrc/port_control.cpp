@@ -24,6 +24,7 @@
 */
 
 #include "port_control.h"
+#include <time.h>
 
 int AUX_split_str(string strSrc, STRVECTOR &vecDest, char cSep)
 {
@@ -375,6 +376,11 @@ int my_serial_ctrl::send_data(const char *szData, char* errMsg, bool b_hex)
 {
 	try
 	{
+		time_t tt = time(NULL);
+		char tTmp[32] = "\0";
+		tm* t = localtime(&tt);
+		sprintf(tTmp, "%02d:%02d:%02d", t->tm_hour, t->tm_min, t->tm_sec);
+
 		unsigned char szDest[1024 * 100] = "";
 		memset(szDest, 0, sizeof(szDest));
 		uint32_t ilen = 0;
@@ -387,6 +393,7 @@ int my_serial_ctrl::send_data(const char *szData, char* errMsg, bool b_hex)
 			char szTmp[1024 * 100] = "";
 			memset(szTmp, 0, sizeof(szTmp));
 			memcpy(szTmp, szData, bytes_wrote * 2);
+			printf("%s ", tTmp);
 			printf(">>(hex)%s\n", szTmp);
 		}
 		else
@@ -395,6 +402,7 @@ int my_serial_ctrl::send_data(const char *szData, char* errMsg, bool b_hex)
 			char szTmp[1024 * 100] = "";
 			memset(szTmp, 0, sizeof(szTmp));
 			memcpy(szTmp, szData, bytes_wrote);
+			printf("%s ", tTmp);
 			printf(">>(visual)%s\n", szTmp);
 		}
 	}
@@ -423,6 +431,11 @@ int my_serial_ctrl::receive_data(uint32_t ulength, char* szRecv, char* errMsg, b
 	{
 		if (this->m_serial->available() > 0)
 		{
+			time_t tt = time(NULL);
+			char tTmp[32] = "\0";
+			tm *t = localtime(&tt);
+			sprintf(tTmp, "%02d:%02d:%02d", t->tm_hour, t->tm_min, t->tm_sec);
+
 			uint8_t result[1024 * 100] = "";
 			memset(result, 0, sizeof(result));
 			size_t r_size = this->m_serial->read(result, ulength);
@@ -434,6 +447,7 @@ int my_serial_ctrl::receive_data(uint32_t ulength, char* szRecv, char* errMsg, b
 				unsigned char szdest[1024 * 100] = "";
 				memset(szdest, 0, sizeof(szdest));
 				HexToAscii(result, szdest, r_size);
+				printf("%s ", tTmp);
 				printf("<<(hex)%s\n", szdest);
 
 				if (szRecv != NULL)
@@ -441,6 +455,7 @@ int my_serial_ctrl::receive_data(uint32_t ulength, char* szRecv, char* errMsg, b
 			}
 			else
 			{
+				printf("%s ", tTmp);
 				// Assume non-printable character inside.
 				printf("<<(visual)");
 				for (size_t i = 0; i < r_size; i++)
@@ -476,6 +491,11 @@ int my_serial_ctrl::wait_2_read_line(uint32_t ulength, char* szRecv, char* errMs
 	{
 		if (this->m_serial->available() > 0)
 		{
+			time_t tt = time(NULL);
+			char tTmp[32] = "\0";
+			tm *t = localtime(&tt);
+			sprintf(tTmp, "%02d:%02d:%02d", t->tm_hour, t->tm_min, t->tm_sec);
+
 			uint8_t result[1024 * 100] = "";
 			memset(result, 0, sizeof(result));
 			string sTmp;
@@ -490,6 +510,7 @@ int my_serial_ctrl::wait_2_read_line(uint32_t ulength, char* szRecv, char* errMs
 				unsigned char szdest[1024 * 100] = "";
 				memset(szdest, 0, sizeof(szdest));
 				HexToAscii(result, szdest, r_size);
+				printf("%s ", tTmp);
 				printf("<<(hex)%s\n", szdest);
 
 				if (szRecv != NULL)
@@ -497,6 +518,7 @@ int my_serial_ctrl::wait_2_read_line(uint32_t ulength, char* szRecv, char* errMs
 			}
 			else
 			{
+				printf("%s ", tTmp);
 				// Assume non-printable character inside.
 				printf("<<(visual)");
 				for (size_t i = 0; i < r_size; i++)

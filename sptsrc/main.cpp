@@ -26,6 +26,7 @@
 #include "port_control.h"
 #include "utility.h"
 #include <gtk/gtk.h>
+#include <time.h>
 
 #define MAX_SEND (1024*100)
 
@@ -671,6 +672,11 @@ text_view_output_callback(GtkWidget *widget, gpointer data)
 {
 	if (NULL != pS)
 	{
+		time_t tt = time(NULL);
+		char tTmp[32] = "\0";
+		tm* t = localtime(&tt);
+		sprintf(tTmp, "%02d:%02d:%02d ", t->tm_hour, t->tm_min, t->tm_sec);
+
 		gchar errMsg_s[256] = "\0";
 		gchar g_out[1024*100*4] = "\0";
 		int i_ret_s, i_ret_r;
@@ -685,6 +691,7 @@ text_view_output_callback(GtkWidget *widget, gpointer data)
 			i_ret_s = pS->send_data(g_text2send, errMsg_s, g_hex_send_checked);
 		}
 
+		strcat(g_out, tTmp);
 		strcat(g_out, ">>");
 		strcat(g_out, g_text2send);
 		strcat(g_out, "\n");
@@ -868,6 +875,11 @@ gboolean readDaemon(gpointer data)
 {
 	if (pS->m_serial->isOpen())
 	{
+		time_t tt = time(NULL);
+		char tTmp[32] = "\0";
+		tm* t = localtime(&tt);
+		sprintf(tTmp, "%02d:%02d:%02d ", t->tm_hour, t->tm_min, t->tm_sec);
+
 		gchar errMsg_s[256] = "\0";
 		gchar g_out[1024 * 100 * 4] = "\0";
 		int i_ret_r = 0;
@@ -888,12 +900,14 @@ gboolean readDaemon(gpointer data)
 			if (g_hex_output_checked)
 			{
 				string sTmp = insert_space_split_2(szRecieve);
+				strcat(g_out, tTmp);
 				strcat(g_out, "<<");
 				strcat(g_out, sTmp.c_str());
 				strcat(g_out, "\n");
 			}
 			else
 			{
+				strcat(g_out, tTmp);
 				strcat(g_out, "<<");
 				strcat(g_out, szRecieve);
 				strcat(g_out, "\n");
