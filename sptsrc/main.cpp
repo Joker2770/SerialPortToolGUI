@@ -874,8 +874,9 @@ gboolean readDaemon(gpointer data)
 		gchar errMsg_r[256] = "\0";
 		char szRecieve[1024 * 100] = "";
 		i_ret_r = pS->wait_2_read_line(atol(g_data_buf_len), szRecieve, errMsg_r, g_hex_output_checked);
+		//printf("i_ret_r: %d\n", i_ret_r);
 		if (i_ret_r != 0)
-			return FALSE;
+			return TRUE;
 
 		if (strlen(errMsg_r) > 0)
 		{
@@ -982,7 +983,7 @@ int main(int argc, char *argv[])
 	button = gtk_builder_get_object(builder, "btn_clear_output");
 	g_signal_connect(button, "clicked", G_CALLBACK(clear_callback), (gpointer)textBuffer);
 
-	gdk_threads_add_timeout(atol(g_Data_1) > 0? atol(g_Data_1):1000, readDaemon, (gpointer)textBuffer);
+	gdk_threads_add_timeout(atol(g_Data_1) > 0 ? atol(g_Data_1) : 1000, readDaemon, (gpointer)textBuffer);
 
 	//textView = gtk_builder_get_object(builder, "utility_tv_send");
 	//gtk_widget_grab_focus((GtkWidget*)textView);

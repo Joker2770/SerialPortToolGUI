@@ -421,7 +421,7 @@ int my_serial_ctrl::receive_data(uint32_t ulength, char* szRecv, char* errMsg, b
 {
 	try
 	{
-		if (this->m_serial->available())
+		if (this->m_serial->available() > 0)
 		{
 			uint8_t result[1024 * 100] = "";
 			memset(result, 0, sizeof(result));
@@ -474,7 +474,7 @@ int my_serial_ctrl::wait_2_read_line(uint32_t ulength, char* szRecv, char* errMs
 {
 	try
 	{
-		if (this->m_serial->available())
+		if (this->m_serial->available() > 0)
 		{
 			uint8_t result[1024 * 100] = "";
 			memset(result, 0, sizeof(result));
