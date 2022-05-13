@@ -873,50 +873,60 @@ clear_callback(GtkWidget *widget, gpointer data)
 
 gboolean readDaemon(gpointer data)
 {
+	clock_t clk_start, clk_end;
+	clk_start = clock();
+
+	uint32_t u_timeout = pS->m_serial->getTimeout().read_timeout_constant > 0 ? pS->m_serial->getTimeout().read_timeout_constant : 1000;
+
 	if (pS->m_serial->isOpen())
 	{
-		time_t tt = time(NULL);
-		char tTmp[32] = "\0";
-		tm* t = localtime(&tt);
-		sprintf(tTmp, "%02d:%02d:%02d ", t->tm_hour, t->tm_min, t->tm_sec);
-
-		gchar errMsg_s[256] = "\0";
-		gchar g_out[1024 * 100 * 4] = "\0";
-		int i_ret_r = 0;
-		gchar errMsg_r[256] = "\0";
-		char szRecieve[1024 * 100] = "";
-		i_ret_r = pS->wait_2_read_line(atol(g_data_buf_len), szRecieve, errMsg_r, g_hex_output_checked);
-		//printf("i_ret_r: %d\n", i_ret_r);
-		if (i_ret_r != 0)
-			return TRUE;
-
-		if (strlen(errMsg_r) > 0)
+		do
 		{
-			strcat(g_out, errMsg_r);
-			strcat(g_out, "\n");
-		}
-		else
-		{
-			if (g_hex_output_checked)
+			time_t tt = time(NULL);
+			char tTmp[32] = "\0";
+			tm *t = localtime(&tt);
+			sprintf(tTmp, "%02d:%02d:%02d ", t->tm_hour, t->tm_min, t->tm_sec);
+
+			gchar errMsg_s[256] = "\0";
+			gchar g_out[1024 * 100 * 4] = "\0";
+			int i_ret_r = 0;
+			gchar errMsg_r[256] = "\0";
+			char szRecieve[1024 * 100] = "";
+			i_ret_r = pS->wait_2_read_line(atol(g_data_buf_len), szRecieve, errMsg_r, g_hex_output_checked);
+			// printf("i_ret_r: %d\n", i_ret_r);
+			if (i_ret_r != 0)
+				return TRUE;
+
+			if (strlen(errMsg_r) > 0)
 			{
-				string sTmp = insert_space_split_2(szRecieve);
-				strcat(g_out, tTmp);
-				strcat(g_out, "<<");
-				strcat(g_out, sTmp.c_str());
+				strcat(g_out, errMsg_r);
 				strcat(g_out, "\n");
 			}
 			else
 			{
-				strcat(g_out, tTmp);
-				strcat(g_out, "<<");
-				strcat(g_out, szRecieve);
-				strcat(g_out, "\n");
+				if (g_hex_output_checked)
+				{
+					string sTmp = insert_space_split_2(szRecieve);
+					strcat(g_out, tTmp);
+					strcat(g_out, "<<");
+					strcat(g_out, sTmp.c_str());
+					strcat(g_out, "\n");
+				}
+				else
+				{
+					strcat(g_out, tTmp);
+					strcat(g_out, "<<");
+					strcat(g_out, szRecieve);
+					strcat(g_out, "\n");
+				}
 			}
-		}
 
-		GtkTextIter start, end;
-		gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(data), &start, &end);
-		gtk_text_buffer_insert(GTK_TEXT_BUFFER(data), &end, g_out, strlen(g_out));
+			GtkTextIter start, end;
+			gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(data), &start, &end);
+			gtk_text_buffer_insert(GTK_TEXT_BUFFER(data), &end, g_out, strlen(g_out));
+
+			clk_end = clock();
+		} while ((clk_end - clk_start) / CLOCKS_PER_SEC * 1000 < u_timeout);
 	}
 
 	return TRUE;
@@ -997,7 +1007,7 @@ int main(int argc, char *argv[])
 	button = gtk_builder_get_object(builder, "btn_clear_output");
 	g_signal_connect(button, "clicked", G_CALLBACK(clear_callback), (gpointer)textBuffer);
 
-	gdk_threads_add_timeout(atol(g_Data_1) > 0 ? atol(g_Data_1) : 1000, readDaemon, (gpointer)textBuffer);
+	gdk_threads_add_timeout(pS->m_serial->getTimeout().read_timeout_constant > 0 ? pS->m_serial->getTimeout().read_timeout_constant : 1000, readDaemon, (gpointer)textBuffer);
 
 	//textView = gtk_builder_get_object(builder, "utility_tv_send");
 	//gtk_widget_grab_focus((GtkWidget*)textView);
