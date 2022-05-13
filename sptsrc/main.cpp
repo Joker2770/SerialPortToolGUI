@@ -876,7 +876,7 @@ gboolean readDaemon(gpointer data)
 	clock_t clk_start, clk_end;
 	clk_start = clock();
 
-	uint32_t u_timeout = pS->m_serial->getTimeout().read_timeout_constant > 0 ? pS->m_serial->getTimeout().read_timeout_constant : 1000;
+	uint32_t u_timeout = pS->m_serial->getTimeout().read_timeout_constant;
 
 	if (pS->m_serial->isOpen())
 	{
