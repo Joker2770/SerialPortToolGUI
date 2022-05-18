@@ -1,4 +1,4 @@
-#cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 2.6.0)
 
 if(CMAKE_CONFIGURATION_TYPES)
 	set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "My multi config types" FORCE)
