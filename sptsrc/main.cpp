@@ -1007,7 +1007,7 @@ int main(int argc, char *argv[])
 	button = gtk_builder_get_object(builder, "btn_clear_output");
 	g_signal_connect(button, "clicked", G_CALLBACK(clear_callback), (gpointer)textBuffer);
 
-	gdk_threads_add_timeout(pS->m_serial->getTimeout().read_timeout_constant > 0 ? pS->m_serial->getTimeout().read_timeout_constant : 1000, readDaemon, (gpointer)textBuffer);
+	gdk_threads_add_idle(readDaemon, (gpointer)textBuffer);
 
 	//textView = gtk_builder_get_object(builder, "utility_tv_send");
 	//gtk_widget_grab_focus((GtkWidget*)textView);
