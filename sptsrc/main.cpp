@@ -873,15 +873,15 @@ clear_callback(GtkWidget *widget, gpointer data)
 
 gboolean readDaemon(gpointer data)
 {
-	clock_t clk_start, clk_end;
-	clk_start = clock();
+	// clock_t clk_start, clk_end;
+	// clk_start = clock();
 
-	uint32_t u_timeout = pS->m_serial->getTimeout().read_timeout_constant;
+	// uint32_t u_timeout = pS->m_serial->getTimeout().read_timeout_constant;
 
 	if (pS->m_serial->isOpen())
 	{
-		do
-		{
+		//do
+		//{
 			time_t tt = time(NULL);
 			char tTmp[32] = "\0";
 			tm *t = localtime(&tt);
@@ -925,8 +925,8 @@ gboolean readDaemon(gpointer data)
 			gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(data), &start, &end);
 			gtk_text_buffer_insert(GTK_TEXT_BUFFER(data), &end, g_out, strlen(g_out));
 
-			clk_end = clock();
-		} while ((clk_end - clk_start) / CLOCKS_PER_SEC * 1000 < u_timeout);
+		//	clk_end = clock();
+		//} while ((clk_end - clk_start) / CLOCKS_PER_SEC * 1000 < u_timeout);
 	}
 
 	return TRUE;
