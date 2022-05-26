@@ -895,7 +895,10 @@ gboolean readDaemon(gpointer data)
 			i_ret_r = pS->wait_2_read_line(atol(g_data_buf_len), szRecieve, errMsg_r, g_hex_output_checked);
 			// printf("i_ret_r: %d\n", i_ret_r);
 			if (i_ret_r != 0)
+			{
+				usleep(50000);
 				return TRUE;
+			}
 
 			if (strlen(errMsg_r) > 0)
 			{
