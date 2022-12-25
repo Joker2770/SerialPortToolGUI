@@ -12,4 +12,5 @@ _deps
 
 [Bb]uild/
 .vscode/
+.vs/
 *.ui~
