@@ -1,10 +1,33 @@
+#
+#    This is a snapcraft build script.
+#    Copyright (C) 2022 Jintao Yang <yjt950840@outlook.com>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+#    snapcraft.yaml:
+#       snapcraft script.
+#       build snap package on Linux.
+#
+
 name: serialporttoolgui # you probably want to 'snapcraft register <name>'
 version: '0.1.05.20220526' # just for humans, typically '1.2+git' or '1.3.2'
-summary:  A Cross-platform serial test tool. # 79 char long summary
+summary:  A Cross-platform serial debug tool. # 79 char long summary
 description: |
-  A simple Cross-platform serial test tool, created by Joker2770< https://github.com/Joker2770/SerialPortToolGUI >.
+  A simple Cross-platform serial debug tool, created by Joker2770< https://github.com/Joker2770/SerialPortToolGUI >.
 
-# icon: gui/icon.png
+  **For serial port hardware access, you would better install with '--devmode'. e.g.**
+     `sudo snap install --devmode serialporttool --beta`
 
 grade: stable # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
