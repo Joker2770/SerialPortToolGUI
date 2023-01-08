@@ -7,7 +7,7 @@
 
 /* 
     A Cross-platform serial debug tool.
-    Copyright (C) 2021  joker2770(Jintao Yang)
+    Copyright (C) 2021-2023  joker2770(Jintao Yang)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -679,16 +679,15 @@ text_view_output_callback(GtkWidget *widget, gpointer data)
 
 		gchar errMsg_s[256] = "\0";
 		gchar g_out[1024*100*4] = "\0";
-		int i_ret_s, i_ret_r;
 		if (g_hex_send_checked)
 		{
 			string s2s = string(g_text2send);
 			s2s = trimString(s2s);
-			i_ret_s = pS->send_data(s2s.c_str(), errMsg_s, g_hex_send_checked);
+			pS->send_data(s2s.c_str(), errMsg_s, g_hex_send_checked);
 		}
 		else
 		{
-			i_ret_s = pS->send_data(g_text2send, errMsg_s, g_hex_send_checked);
+			pS->send_data(g_text2send, errMsg_s, g_hex_send_checked);
 		}
 
 		strcat(g_out, tTmp);
@@ -887,7 +886,7 @@ gboolean readDaemon(gpointer data)
 			tm *t = localtime(&tt);
 			sprintf(tTmp, "%02d:%02d:%02d ", t->tm_hour, t->tm_min, t->tm_sec);
 
-			gchar errMsg_s[256] = "\0";
+			//gchar errMsg_s[256] = "\0";
 			gchar g_out[1024 * 100 * 4] = "\0";
 			int i_ret_r = 0;
 			gchar errMsg_r[256] = "\0";

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6.0)
+cmake_minimum_required(VERSION 2.8.12)
 
 if(CMAKE_CONFIGURATION_TYPES)
 	set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "My multi config types" FORCE)
@@ -55,7 +55,7 @@ include_directories(serial/include)
 include_directories (${GTK3_INCLUDE_DIRS})
 
 ## SerialPortTool 
-file(GLOB SerialPortTool_SRCS "./sptsrc/*.cpp" "./sptsrc/*.h")
+file(GLOB SerialPortTool_SRCS "${CMAKE_SOURCE_DIR}/sptsrc/*.cpp" "${CMAKE_SOURCE_DIR}/sptsrc/*.h")
 add_executable(${PROJECT_NAME} ${SerialPortTool_SRCS})
 add_dependencies(${PROJECT_NAME} serial)
 target_link_libraries(${PROJECT_NAME} serial)
