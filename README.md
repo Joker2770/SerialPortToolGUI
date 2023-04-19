@@ -7,10 +7,10 @@ A Cross-platform serial debug tool.
 
 ## Dependencies
 Required:
-* [cmake](http://www.cmake.org) - buildsystem
-* g++ (>= 7.4.0 recommended)
-* gcc (>= 7.4.0 recommended)
-* gtk+3.0 (>= 3.22)
+*   [cmake](http://www.cmake.org) - buildsystem
+*   g++ (>= 7.4.0 recommended)
+*   gcc (>= 7.4.0 recommended)
+*   gtk+3.0 (>= 3.22)
 
 ## Build on Linux
 ~~~

@@ -7,7 +7,7 @@
 
 /* 
     A Cross-platform serial debug tool.
-    Copyright (C) 2021  joker2770(Jintao Yang)
+    Copyright (C) 2021-2023  joker2770(Jintao Yang)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

@@ -7,7 +7,7 @@
 
 /* 
     A Cross-platform serial debug tool.
-    Copyright (C) 2021  joker2770(Jintao Yang)
+    Copyright (C) 2021-2023  joker2770(Jintao Yang)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -105,22 +105,24 @@ int StringToHex(char *pSrc, unsigned char *cbuf, unsigned int *nlen)
 	return 0;
 }
 
-my_serial_ctrl::my_serial_ctrl()
+my_serial_ctrl::my_serial_ctrl() : m_serial(new serial::Serial())
 {
-	this->m_serial = new serial::Serial();
-	serial::Timeout timeout = serial::Timeout::simpleTimeout(1000);
-	this->m_serial->setTimeout(timeout);
+	if (nullptr != this->m_serial)
+	{
+		serial::Timeout timeout = serial::Timeout::simpleTimeout(1000);
+		this->m_serial->setTimeout(timeout);
+	}
 }
 
 my_serial_ctrl::~my_serial_ctrl()
 {
-	if (NULL != this->m_serial)
+	if (nullptr != this->m_serial)
 	{
 		if (this->m_serial->isOpen())
 			this->m_serial->close();
 
 		delete this->m_serial;
-		this->m_serial = NULL;
+		this->m_serial = nullptr;
 	}
 }
 
@@ -439,8 +441,6 @@ int my_serial_ctrl::receive_data(uint32_t ulength, char* szRecv, char* errMsg, b
 			uint8_t result[1024 * 100] = "";
 			memset(result, 0, sizeof(result));
 			size_t r_size = this->m_serial->read(result, ulength);
-			if (r_size < 0)
-				throw -1;
 
 			if (b_hex)
 			{
