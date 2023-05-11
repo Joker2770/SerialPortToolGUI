@@ -1,5 +1,6 @@
 # SerialPortToolGUI
 
+[![CMake](https://github.com/Joker2770/SerialPortToolGUI/actions/workflows/cmake.yml/badge.svg)](https://github.com/Joker2770/SerialPortToolGUI/actions/workflows/cmake.yml)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3efc027964764539b02e58ae1b8ba422)](https://app.codacy.com/gh/Joker2770/SerialPortToolGUI?utm_source=github.com&utm_medium=referral&utm_content=Joker2770/SerialPortToolGUI&utm_campaign=Badge_Grade_Settings)
 [![serialporttoolgui](https://snapcraft.io/serialporttoolgui/badge.svg)](https://snapcraft.io/serialporttoolgui)
 
