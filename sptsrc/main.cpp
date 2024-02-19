@@ -895,7 +895,7 @@ gboolean readDaemon(gpointer data)
 			// printf("i_ret_r: %d\n", i_ret_r);
 			if (i_ret_r != 0)
 			{
-				usleep(50000);
+				// usleep(50000);
 				return TRUE;
 			}
 
@@ -964,7 +964,7 @@ int main(int argc, char *argv[])
 	{
 		g_printerr("Error loading file: %s\n", error->message);
 		g_clear_error(&error);
-		if (gtk_builder_add_from_file(builder, "SerialPortToolGUI.ui", &error) == 0)
+		if (gtk_builder_add_from_file(builder, "./SerialPortToolGUI.ui", &error) == 0)
 		{
 			g_printerr("Error loading file: %s\n", error->message);
 			g_clear_error(&error);

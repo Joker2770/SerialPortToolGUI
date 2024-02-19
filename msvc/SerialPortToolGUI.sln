@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SerialPortToolGUI", "SerialPortToolGUI.vcxproj", "{8EDEAF19-44B5-4DBA-AD27-B5FD7B9F2CDA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "serial", "..\serial\visual_studio\serial\serial.vcxproj", "{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8EDEAF19-44B5-4DBA-AD27-B5FD7B9F2CDA}.Debug|x64.ActiveCfg = Debug|x64
+		{8EDEAF19-44B5-4DBA-AD27-B5FD7B9F2CDA}.Debug|x64.Build.0 = Debug|x64
+		{8EDEAF19-44B5-4DBA-AD27-B5FD7B9F2CDA}.Debug|x86.ActiveCfg = Debug|Win32
+		{8EDEAF19-44B5-4DBA-AD27-B5FD7B9F2CDA}.Debug|x86.Build.0 = Debug|Win32
+		{8EDEAF19-44B5-4DBA-AD27-B5FD7B9F2CDA}.Release|x64.ActiveCfg = Release|x64
+		{8EDEAF19-44B5-4DBA-AD27-B5FD7B9F2CDA}.Release|x64.Build.0 = Release|x64
+		{8EDEAF19-44B5-4DBA-AD27-B5FD7B9F2CDA}.Release|x86.ActiveCfg = Release|Win32
+		{8EDEAF19-44B5-4DBA-AD27-B5FD7B9F2CDA}.Release|x86.Build.0 = Release|Win32
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Debug|x64.ActiveCfg = Debug|x64
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Debug|x64.Build.0 = Debug|x64
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Debug|x86.ActiveCfg = Debug|Win32
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Debug|x86.Build.0 = Debug|Win32
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Release|x64.ActiveCfg = Release|x64
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Release|x64.Build.0 = Release|x64
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Release|x86.ActiveCfg = Release|Win32
+		{A8517FB2-C74E-43BD-B3C6-B05D3FC11ECD}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {014D5816-EDB0-4D90-B9AB-16B28A475848}
+	EndGlobalSection
+EndGlobal
